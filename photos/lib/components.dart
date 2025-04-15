@@ -1,0 +1,40 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+const projectName = "Halda";
+const apiKey ="2sMgUe379jprtRERyMz-sYltcHesG_6tWPfzG10XznA";
+const Sckey ="6l-PE-7axOAjET8rLYtdOcnQfwEr0LUaf96gukrYGok";
+
+
+const baseLink = "https://api.unsplash.com/"; 
+
+
+
+//! ------------------------------------------------------------------------------------------------ Sizes
+get baseScreenSize => const Size(360, 690);
+get defaultPadding => 24.sp;
+get defaultBoxHeight => defaultPadding * 2;
+get defaultBorderRadius => 8.0;
+const paginationPageSize = 50;
+const maxBoxWidth = 400.0;
+
+//* Border
+get borderWidth1 => 2.sp;
+get borderWidth2 => 1.sp;
+
+//! ------------------------------------------------------------------------------------------------ Time
+const defaultDuration = Duration(milliseconds: 500);
+const apiCallTimeOut = Duration(seconds: 60);
+
+//! ------------------------------------------------------------------------------------------------ Text
+get textTheme => GoogleFonts.montserratTextTheme(Typography.englishLike2018.apply(fontSizeFactor: 1.sp));
+
+get buttonTheme => ButtonThemeData(height: defaultBoxHeight);
+get appBarTheme => AppBarTheme(
+      toolbarHeight: defaultBoxHeight,
+      surfaceTintColor: Colors.transparent,
+      centerTitle: false,
+    );
+
+
