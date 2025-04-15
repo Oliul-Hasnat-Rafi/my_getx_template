@@ -4,26 +4,11 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        
         {
-            "name": "photos",
-            "cwd": "photos",
+            "name": "qs",
+            "cwd": "qs",
             "request": "launch",
             "type": "dart"
-        },
-        {
-            "name": "photos (profile mode)",
-            "cwd": "photos",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "profile"
-        },
-        {
-            "name": "photos (release mode)",
-            "cwd": "photos",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "release"
         }
     ]
 }
