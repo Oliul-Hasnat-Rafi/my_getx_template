@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:photos/src/view/widget%20copy/custom_animated_size_widget.dart';
+import 'package:photos/src/view/widget/custom_animated_size_widget.dart';
 
 class CustomTextFormField extends StatefulWidget {
   const CustomTextFormField({

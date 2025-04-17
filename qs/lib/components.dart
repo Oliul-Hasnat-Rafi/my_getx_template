@@ -4,9 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 const projectName = "qs";
 const projectVersion = "1.0.0";
-const baseUrl = 'https://dummyjson.com/auth/login';
 
-const baseLink = "https://api.unsplash.com/";
+const baseLink = "https://dummyjson.com/";
 
 //! ------------------------------------------------------------------------------------------------ Sizes
 get baseScreenSize => const Size(360, 690);
@@ -33,3 +32,22 @@ get appBarTheme => AppBarTheme(
       surfaceTintColor: Colors.transparent,
       centerTitle: false,
     );
+get textButtonTheme => TextButtonThemeData(
+      style: TextButton.styleFrom(
+        padding: EdgeInsets.symmetric(horizontal: defaultPadding),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(defaultBorderRadius),
+        ),
+      ),
+    );
+
+List<Map<String, String>> loginInfo = [
+  {
+    "username": "emilys",
+    "password": "emilyspass",
+  },
+  {
+    "username": "michaelw",
+    "password": "michaelwpass",
+  }
+];

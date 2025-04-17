@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:photos/src/view/widget%20copy/custom_text_field_widget.dart';
+import 'package:photos/src/view/widget/custom_text_field_widget.dart';
 
 import '../../../components.dart';
 
@@ -108,7 +108,7 @@ class _CustomTextField1State extends State<CustomTextField1> {
                 : GestureDetector(
                     onTap: () => showText.value = !showText.value,
                     child: Padding(
-                      padding: EdgeInsets.all(defaultPadding / 3),
+                      padding: EdgeInsets.all(defaultPadding / 5),
                       child: SvgPicture.asset(
                         showText.value ? "assets/icons/eye_closed_icon.svg" : "assets/icons/eye_opened_icon.svg",
                         colorFilter: ColorFilter.mode(Theme.of(context).colorScheme.primary, BlendMode.srcIn),

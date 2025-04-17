@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:photos/src/view/widget%20copy/custom_text_field1.dart';
+import 'package:photos/src/view/widget/custom_text_field1.dart';
 
 import '../../../components.dart';
 
