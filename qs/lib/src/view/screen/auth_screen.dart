@@ -137,14 +137,14 @@ class AuthScreen extends StatelessWidget {
                           onTap: controller.isLoading.value
                               ? null
                               : () {
-                                  if (formKey.currentState != null && formKey.currentState!.validate()) {
+                                 // if (formKey.currentState != null && formKey.currentState!.validate()) {
                                     return controller.handleSubmit(
                                       name: _nameController.text.trim(),
                                       email: _emailController.text.trim(),
                                       password: _passwordController.text.trim(),
                                     );
-                                  }
-                                return null;
+                                 //}
+                                //return null;
                                 },
                           child: Text(
                             controller.isLogin.value ? 'Login' : 'Sign Up',
@@ -154,7 +154,6 @@ class AuthScreen extends StatelessWidget {
 
                     _verticalSpace(2),
 
-                    // Toggle between login and signup
                     Center(
                       child: Obx(() => RichText(
                             text: TextSpan(

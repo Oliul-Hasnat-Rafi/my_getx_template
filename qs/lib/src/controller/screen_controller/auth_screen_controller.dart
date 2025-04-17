@@ -1,7 +1,5 @@
 import 'package:get/get.dart';
 import 'package:photos/src/controller/data_controller/data_controller.dart';
-import '../../core/utils/app_context.dart';
-import '../../core/utils/utils.dart';
 import '../../view/home/home_screen.dart';
 
 class AuthScreenController extends GetxController {
@@ -16,13 +14,14 @@ class AuthScreenController extends GetxController {
   }
 
   void _initData() async {
-    if (await dataController.isLogin) {
-      Get.off(
-        () => const HomeScreen(),
-        transition: Transition.rightToLeft,
-        duration: const Duration(milliseconds: 500),
-      );
-    }
+    // final String? token = await CacheService.instance.retrieveBearerToken();
+    // if (token != null) {
+    //   Get.off(
+    //     () => const HomeScreen(),
+    //     transition: Transition.rightToLeft,
+    //     duration: const Duration(milliseconds: 500),
+    //   );
+    // }
   }
 
   Future<bool?> handleSubmit({
@@ -69,11 +68,11 @@ class AuthScreenController extends GetxController {
         //     return true;
         //   }
         // }
-        showSnackBarMessage(AppContext.context, "Registration is Failed", SnackBarMessageType.failure);
+        //showSnackBarMessage(AppContext.context, "Registration is Failed", SnackBarMessageType.failure);
         return false;
       }
     } catch (e) {
-      showSnackBarMessage(AppContext.context, "Authentication failed: ${e.toString()}", SnackBarMessageType.failure);
+      //showSnackBarMessage(AppContext.context, "Authentication failed: ${e.toString()}", SnackBarMessageType.failure);
       return false;
     } finally {
       isLoading.value = false;

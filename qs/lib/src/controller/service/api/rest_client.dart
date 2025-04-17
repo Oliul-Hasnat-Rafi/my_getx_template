@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'package:dio/dio.dart' as dio;
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import '../../../core/values/app_strings.dart';
+import 'package:photos/src/controller/service/api/api_end_points.dart';
 import '../functions/dev_print.dart';
-import '../local_data/local_data_handler.dart';
+import '../local_data/app_store_imp.dart';
 import '../user_message/snackbar.dart';
 
 class HttpCall {
@@ -20,7 +20,7 @@ class HttpCall {
 
   HttpCall() {
     dio.BaseOptions options = dio.BaseOptions(
-      baseUrl: AppStrings.baseLink,
+      baseUrl: ApiEndPoints.baseLink,
       connectTimeout: _timeout,
       receiveTimeout: const Duration(seconds: 3000),
       headers: _defaultHeaders,
@@ -70,7 +70,7 @@ class HttpCall {
   }
 
   Future<void> _saveResponseToStorage(String url, dynamic body, dio.Response response) async {
-    final LocalDataHandler localData = Get.put(LocalDataHandler());
+    final AppStorageImp localData = Get.put(AppStorageImp());
     final String key = "${url.hashCode}_${body == null ? "" : body.hashCode}";
 
     try {
@@ -88,7 +88,7 @@ class HttpCall {
   }
 
   Future<dio.Response<dynamic>?> _getOfflineData(String url, dynamic body) async {
-    final LocalDataHandler localData = Get.put(LocalDataHandler());
+    final AppStorageImp localData = Get.put(AppStorageImp());
     final String key = "${url.hashCode}_${body == null ? "" : body.hashCode}";
 
     String? cachedData = localData.box.read(key);

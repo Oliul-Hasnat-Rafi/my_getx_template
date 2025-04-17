@@ -1,17 +1,18 @@
 import 'package:get/get.dart';
+import 'package:photos/src/controller/service/local_data/cache_service.dart';
 import '../../model/response_model/UserModel.dart';
 import '../service/api/api_services.dart';
 import '../service/error_handlers/error_handler.dart';
-import '../service/local_data/local_data_handler.dart';
+import '../service/local_data/app_store_imp.dart';
 
 class DataController extends GetxController {
   bool _isInit = false;
   late final ApiServices _apiServices;
   late final ErrorHandler _errorHandler;
-  late final LocalDataHandler localData;
+  late final AppStorageImp localData;
 
   DataController() {
-    localData = Get.put(LocalDataHandler());
+    localData = Get.put(AppStorageImp());
     _apiServices = Get.put(ApiServices());
   }
 
@@ -46,7 +47,7 @@ class DataController extends GetxController {
         t = await _apiServices.login(email: email, password: password);
       });
       if (s.isSuccess && t?.accessToken != null) {
-        localData.setUserData(t!);
+        CacheService.instance.storeBearerToken(t!.accessToken!);
         return true;
       }
       return false;
