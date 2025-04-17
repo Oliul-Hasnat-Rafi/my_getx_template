@@ -5,21 +5,34 @@ import 'package:photos/src/controller/service/local_data/app_store.dart';
 import 'package:photos/src/model/app_model.dart/local_data_model.dart';
 import 'package:photos/src/model/response_model/UserModel.dart';
 
-class AppStorageImp extends GetxController implements AppStorageI {
+class AppStorageImp implements AppStorageI {
   late final GetStorage box;
   final String _userDataKey = "userData";
+  final String _userDataToken = "userToken";
   LocalDataModel localData = LocalDataModel();
 
   Future<void> initApp() async {
     await GetStorage.init();
     box = GetStorage();
-    var r = box.read(_userDataKey);
+  }
+
+  @override
+  Future<void> storeBearerToken(String token) async {
+    localData = localData.copyWith(
+      userData: localData.userData.value.copyWith(
+        accessToken: token,
+      ),
+    );
+    await box.write(_userDataToken, token);
+  }
+
+  @override
+  Future<String?> retrieveBearerToken() async {
     try {
-      if (r != null) {
-        localData = LocalDataModel.fromJson(r);
-      }
+      final storedToken = box.read<String>(_userDataToken);
+      return storedToken;
     } catch (e) {
-      box.erase();
+      return null;
     }
   }
 
@@ -54,34 +67,27 @@ class AppStorageImp extends GetxController implements AppStorageI {
   }
 
   @override
-  Future<void> storeBearerToken(String token) async {
-    localData = localData.copyWith(
-      userData: localData.userData.value.copyWith(
-        accessToken: token,
-      ),
-    );
-    await box.write(_userDataKey, localData.toJson());
-  }
-
-  @override
-  Future<String?> retrieveBearerToken() async {
-    return localData.userData.value.accessToken;
-  }
-
-  @override
   Future<void> storeCredentials(Map<String, dynamic> credentials) {
     // TODO: implement storeCredentials
     throw UnimplementedError();
   }
 
-  @override
-  Future<UserModel> getUserData() {
-    return Future.value(localData.userData.value);
-  }
+@override
+Future<void> setUserData(UserModel userData) async {
+  localData = localData.copyWith(userData: userData);
+  await box.write(_userDataKey, userData.toJson());
+}
 
-  @override
-  Future<void> setUserData(UserModel userData) async {
-    localData = localData.copyWith(userData: userData);
-    box.write(_userDataKey, localData.toJson());
+@override
+Future<UserModel?> getUserData() async {
+  try {
+    final Map<String, dynamic>? userData = box.read<Map<String, dynamic>>(_userDataKey);
+    if (userData != null) {
+      return UserModel.fromJson(userData);
+    }
+    return localData.userData.value;
+  } catch (e) {
+    return localData.userData.value;
   }
+}
 }

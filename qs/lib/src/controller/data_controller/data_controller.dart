@@ -29,7 +29,8 @@ class DataController extends GetxController {
   }
 
   Future<void> startupTasks() async {
-    await localData.initApp();
+    //await localData.initApp();
+    await CacheService.init();
     _errorHandler = ErrorHandler();
   }
 
@@ -47,7 +48,9 @@ class DataController extends GetxController {
         t = await _apiServices.login(email: email, password: password);
       });
       if (s.isSuccess && t?.accessToken != null) {
-        CacheService.instance.storeBearerToken(t!.accessToken!);
+        await CacheService.instance.storeBearerToken(t!.accessToken!);
+        await CacheService.instance.setUserData(t!); 
+
         return true;
       }
       return false;

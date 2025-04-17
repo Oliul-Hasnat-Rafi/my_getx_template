@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:photos/src/controller/data_controller/data_controller.dart';
+import 'package:photos/src/controller/service/local_data/cache_service.dart';
 import '../../view/home/home_screen.dart';
 
 class AuthScreenController extends GetxController {
@@ -14,14 +15,19 @@ class AuthScreenController extends GetxController {
   }
 
   void _initData() async {
-    // final String? token = await CacheService.instance.retrieveBearerToken();
-    // if (token != null) {
-    //   Get.off(
-    //     () => const HomeScreen(),
-    //     transition: Transition.rightToLeft,
-    //     duration: const Duration(milliseconds: 500),
-    //   );
-    // }
+    isLoading.value = true;
+    try {
+      final String? token = await CacheService.instance.retrieveBearerToken();
+      if (token != null && token.isNotEmpty) {
+        Get.off(
+          () => const HomeScreen(),
+          transition: Transition.rightToLeft,
+          duration: const Duration(milliseconds: 500),
+        );
+      }
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   Future<bool?> handleSubmit({
