@@ -1,13 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:photos/components.dart';
+import 'package:photos/src/core/theme/color.schema.dart';
+import 'package:photos/src/core/utils/transitions.dart';
+import 'package:photos/src/core/values/app_color.dart';
 import 'package:photos/src/view/screen/auth_screen.dart';
 
 import 'src/controller/data_controller/data_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await GetStorage.init();
+  Get.put(DataController());
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
   runApp(const MyApp());
 }
@@ -25,17 +36,14 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (context, child) => GetMaterialApp(
         debugShowCheckedModeBanner: false,
-        initialBinding: InitializedBinding(),
-        home: child,
+       theme:
+              ThemeData(useMaterial3: true, colorScheme: lightColorScheme,
+                  pageTransitionsTheme: pageTransitionsTheme),
+              darkTheme:
+              ThemeData(useMaterial3: true, colorScheme: darkColorScheme,
+                  pageTransitionsTheme: pageTransitionsTheme),
+        home: AuthScreen(),
       ),
-      child: AuthScreen(),
     );
-  }
-}
-
-class InitializedBinding extends Bindings {
-  @override
-  void dependencies() {
-    Get.put(DataController());
   }
 }

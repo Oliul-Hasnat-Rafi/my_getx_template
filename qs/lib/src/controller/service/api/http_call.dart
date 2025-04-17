@@ -63,7 +63,7 @@ class HttpCall {
     return res;
   }
 
-  Future<http.Response> post(String url,
+  Future<http.Response> post(String url, 
       {String token = '',
       Map<String, String>? headerParameter,
       Object? body,
@@ -84,9 +84,7 @@ class HttpCall {
     if (kDebugMode) {
       devPrint("HttpCall: Requesting: POST------------------------------------------ $link ---- $body");
       showToast(message: link);
-      // header.forEach((key, value) {
-      //   if (kDebugMode) print("$key: $value");
-      // });
+
     }
 
     var res = await _catchCookie<http.Response>(() async => await http.post(Uri.parse(link), headers: header, body: body).timeout(Duration(seconds: requestTimeout ?? _timeout)));

@@ -1,15 +1,28 @@
 import 'package:get/get.dart';
 import 'package:photos/src/controller/data_controller/data_controller.dart';
-
+import '../../core/utils/app_context.dart';
+import '../../core/utils/utils.dart';
 import '../../view/home/home_screen.dart';
 
 class AuthScreenController extends GetxController {
-  final DataController dataController = Get.put(DataController());
-  final RxBool isLogin = false.obs;
+  final DataController dataController = Get.find<DataController>();
+  final RxBool isLogin = true.obs;
   final RxBool isLoading = false.obs;
+
   @override
   void onInit() {
     super.onInit();
+    _initData();
+  }
+
+  void _initData() async {
+    if (await dataController.isLogin) {
+      Get.off(
+        () => const HomeScreen(),
+        transition: Transition.rightToLeft,
+        duration: const Duration(milliseconds: 500),
+      );
+    }
   }
 
   Future<bool?> handleSubmit({
@@ -18,27 +31,50 @@ class AuthScreenController extends GetxController {
     required String password,
   }) async {
     isLoading.value = true;
+
     try {
       if (isLogin.value) {
-        var s = await dataController.login(email: email, password: password);
-        if (s != null) {
+        bool? loginResult = await dataController.login(
+          email: email,
+          password: password,
+        );
+
+        if (loginResult == true) {
+          //    showSnackBarMessage(AppContext.context, "Login ", SnackBarMessageType.success);
           Get.off(
             () => const HomeScreen(),
             transition: Transition.rightToLeft,
             duration: const Duration(milliseconds: 500),
           );
+          return true;
         } else {
+          // showSnackBarMessage(AppContext.context, "Login Failed ", SnackBarMessageType.failure);
           return false;
         }
       } else {
-        // return await dataController.register(
-        //   name: name ?? '',
-        //   email: email,
-        //   password: password,
-        // );
+        // Registration flow (uncomment when ready)
+        // if (!name.isNullOrEmpty && email.isNotEmpty && password.isNotEmpty) {
+        //   bool? registerResult = await dataController.register(
+        //     name: name!,
+        //     email: email,
+        //     password: password,
+        //   );
+        //
+        //   if (registerResult == true) {
+        //     Get.off(
+        //       () => const HomeScreen(),
+        //       transition: Transition.rightToLeft,
+        //       duration: const Duration(milliseconds: 500),
+        //     );
+        //     return true;
+        //   }
+        // }
+        showSnackBarMessage(AppContext.context, "Registration is Failed", SnackBarMessageType.failure);
+        return false;
       }
     } catch (e) {
-      // Handle error
+      showSnackBarMessage(AppContext.context, "Authentication failed: ${e.toString()}", SnackBarMessageType.failure);
+      return false;
     } finally {
       isLoading.value = false;
     }
@@ -46,11 +82,5 @@ class AuthScreenController extends GetxController {
 
   void toggleLoginSignup() {
     isLogin.value = !isLogin.value;
-  }
-
-  @override
-  void onClose() {
-    // Clean up resources if needed
-    super.onClose();
   }
 }

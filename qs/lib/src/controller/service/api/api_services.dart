@@ -21,42 +21,20 @@ class ApiServices extends GetxController {
   }) async {
     try {
       final response = await _httpCall.post(
-      'https://jsonplaceholder.typicode.com/posts',
-        body: {
-          'email': email,
+        'auth/login',
+        body: jsonEncode({
+          'username': email,
           'password': password,
-        },
+        }),
       );
-   
-        return UserModel.fromJson(
-          jsonDecode(response.body),
-        );
-      
+
+      return UserModel.fromJson(
+        jsonDecode(response.body),
+      );
     } catch (e) {
       devPrint(e.toString());
     }
     return null;
   }
-  // Future<PhotoScreenResponseModel?> register({
-  //   required String name,
-  //   required String email,
-  //   required String password,
-  // }) async {
-  //   try {
-  //     final response = await _httpCall.post(
-  //        'https://jsonplaceholder.typicode.com/posts',
-  //       body: {
-  //         'name': name,
-  //         'email': email,
-  //         'password': password,
-  //       },
-  //     );
-  //     if (response != null) {
-  //       return PhotoScreenResponseModel.fromJson(response);
-  //     }
-  //   } catch (e) {
-  //     devPrint(e.toString());
-  //   }
-  //   return null;
-  // }
+  
 }

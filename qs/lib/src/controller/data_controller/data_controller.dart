@@ -1,8 +1,5 @@
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
-
-import '../../model/response_model/photo_screen_response_model.dart';
+import '../../model/response_model/UserModel.dart';
 import '../service/api/api_services.dart';
 import '../service/error_handlers/error_handler.dart';
 import '../service/local_data/local_data_handler.dart';
@@ -11,24 +8,32 @@ class DataController extends GetxController {
   bool _isInit = false;
   late final ApiServices _apiServices;
   late final ErrorHandler _errorHandler;
-  late final LocalDataHandler localData = Get.put(LocalDataHandler());
+  late final LocalDataHandler localData;
+
+  DataController() {
+    localData = Get.put(LocalDataHandler());
+    _apiServices = Get.put(ApiServices());
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    initApp();
+  }
 
   Future<void> initApp() async {
     if (_isInit) return;
     await startupTasks();
-
     _isInit = true;
   }
 
   Future<void> startupTasks() async {
-    _apiServices = Get.put(ApiServices());
-    localData.initApp();
+    await localData.initApp();
     _errorHandler = ErrorHandler();
-    isLogin;
   }
 
-  Future<bool> get isLogin async {
-    return localData.localData.userData.value.accessToken!.isNotEmpty;
+  get isLogin async {
+    return localData.localData.userData.value.accessToken != null && localData.localData.userData.value.accessToken!.isNotEmpty;
   }
 
   Future<bool?> login({
@@ -36,28 +41,17 @@ class DataController extends GetxController {
     required String password,
   }) async {
     try {
-      await _errorHandler.errorHandler(function: () async {
-        return await _apiServices.login(email: email, password: password);
-      }).then((value) => value.isSuccess);
+      UserModel? t;
+      var s = await _errorHandler.errorHandler(function: () async {
+        t = await _apiServices.login(email: email, password: password);
+      });
+      if (s.isSuccess && t?.accessToken != null) {
+        localData.setUserData(t!);
+        return true;
+      }
+      return false;
     } catch (e) {
       throw Exception("Login failed: $e");
     }
-    return false;
   }
-  // Future<bool?> register({
-  //   required String name,
-  //   required String email,
-  //   required String password,
-  // }) async {
-  //   try {
-  //     final response = await _apiServices.register(name: name, email: email, password: password);
-  //     if (response != null) {
-  //       localData.setUserData(response);
-  //       return true;
-  //     }
-  //   } catch (e) {
-  //     _errorHandler.handleError(e);
-  //   }
-  //   return false;
-  // }
 }
