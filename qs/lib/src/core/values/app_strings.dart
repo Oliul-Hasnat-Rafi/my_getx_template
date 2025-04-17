@@ -1,6 +1,6 @@
 abstract class AppStrings {
   final String appName = 'Quick Spot';
-   static String baseLink = "https://dummyjson.com/";
+   static String baseLink = "https://mmonghvlzziihekuwzbr.supabase.co/";
 
   static const String connectionError = 'Connection error, please check your connection';
   static const String pleaseTryAgain = 'Please try again';

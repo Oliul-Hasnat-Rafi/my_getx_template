@@ -3,9 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 abstract class AppValues {
 //! ------------------------------------------------------------------------------------------------ Sizes
-static  Size baseScreenSize = const Size(360, 690);
-
- 
+  static Size baseScreenSize = const Size(360, 690);
   static double padding = 16.w;
   static double paddingZero = 0.w;
   static double halfPadding = 8.w;
