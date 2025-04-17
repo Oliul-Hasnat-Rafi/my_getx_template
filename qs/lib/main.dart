@@ -3,10 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:photos/components.dart';
 import 'package:photos/src/core/theme/color.schema.dart';
 import 'package:photos/src/core/utils/transitions.dart';
-import 'package:photos/src/core/values/app_color.dart';
+import 'package:photos/src/core/values/app_values.dart';
 import 'package:photos/src/view/screen/auth_screen.dart';
 
 import 'src/controller/data_controller/data_controller.dart';
@@ -30,7 +29,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       ensureScreenSize: true,
-      designSize: baseScreenSize,
+      designSize:AppValues.baseScreenSize,
       minTextAdapt: true,
       useInheritedMediaQuery: true,
       splitScreenMode: true,

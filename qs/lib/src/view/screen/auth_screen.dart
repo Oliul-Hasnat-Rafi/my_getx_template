@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:on_process_button_widget/on_process_button_widget.dart';
 import '../../../components.dart';
 import '../../controller/screen_controller/auth_screen_controller.dart';
+import '../../core/values/app_strings.dart';
 import '../widget/custom_animated_size_widget.dart';
 import '../widget/custom_text_field1.dart';
 import '../widget/svg.dart';
@@ -35,18 +36,18 @@ class AuthScreen extends StatelessWidget {
   ) {
     return Scaffold(
       floatingActionButton: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-        for (int i = 0; i < loginInfo.length; i++)
+        for (int i = 0; i < AppStrings.loginInfo.length; i++)
           SizedBox(
             height: defaultBoxHeight,
             child: Padding(
               padding: EdgeInsets.all(defaultPadding / 4),
               child: OnProcessButtonWidget(
                 onTap: () {
-                  _emailController.text = loginInfo[i]['username']!;
-                  _passwordController.text = loginInfo[i]['password']!;
+                  _emailController.text = AppStrings.loginInfo[i]['username']!;
+                  _passwordController.text =AppStrings. loginInfo[i]['password']!;
                 },
                 child: Text(
-                  loginInfo[i]['username']!,
+                 AppStrings. loginInfo[i]['username']!,
                   style: const TextStyle(
                     fontSize: 12,
                   ),

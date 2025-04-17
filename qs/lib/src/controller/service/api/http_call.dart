@@ -6,6 +6,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:photos/src/controller/service/functions/response_conversion.dart';
 import '../../../../components.dart';
+import '../../../core/values/app_strings.dart';
 import '../functions/dev_print.dart';
 import '../local_data/local_data_handler.dart';
 import '../user_message/snackbar.dart';
@@ -46,7 +47,7 @@ class HttpCall {
       });
     }
 
-    String sendLink = "$baseLink$url";
+    String sendLink = "${AppStrings.baseLink}$url";
     // devPrint("HttpCall: Requesting: Get------------------------------------------ $link");
     // var res = await _catchCookie<http.Response>(() async => await http.get(Uri.parse(isImageUrl ? url : link), headers: header).timeout(Duration(seconds: timeout ?? _timeout)));
     // devPrint("HttpCall: Response: Get------------------------------------------ $link ---- ${res.statusCode} ---- ${res.body}");
@@ -79,7 +80,7 @@ class HttpCall {
       header.addAll({'Cookie': _cookie});
     }
 
-    String link = baseLink + url;
+    String link =AppStrings.baseLink + url;
 
     if (kDebugMode) {
       devPrint("HttpCall: Requesting: POST------------------------------------------ $link ---- $body");

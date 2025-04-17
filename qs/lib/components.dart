@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 const projectName = "qs";
 const projectVersion = "1.0.0";
 
-const baseLink = "https://dummyjson.com/";
 
 //! ------------------------------------------------------------------------------------------------ Sizes
 get baseScreenSize => const Size(360, 690);
@@ -41,13 +40,3 @@ get textButtonTheme => TextButtonThemeData(
       ),
     );
 
-List<Map<String, String>> loginInfo = [
-  {
-    "username": "emilys",
-    "password": "emilyspass",
-  },
-  {
-    "username": "michaelw",
-    "password": "michaelwpass",
-  }
-];
