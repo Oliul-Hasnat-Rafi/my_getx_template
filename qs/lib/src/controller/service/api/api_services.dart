@@ -7,8 +7,8 @@ import 'package:photos/src/model/response_model/UserModel.dart';
 
 
 class ApiServices extends GetxController {
-  late final HttpCall _httpCall;
-  ApiServices() : _httpCall = HttpCall();
+  late final RestClient _httpCall;
+  ApiServices() : _httpCall = RestClient();
 
   Future<UserModel?> login({
     required String email,

@@ -7,7 +7,7 @@ import '../functions/dev_print.dart';
 import '../local_data/app_store_imp.dart';
 import '../user_message/snackbar.dart';
 
-class HttpCall {
+class RestClient {
   late dio.Dio _dio;
   String _cookie = "";
 
@@ -18,7 +18,7 @@ class HttpCall {
     "Accept": "/",
   };
 
-  HttpCall() {
+  RestClient() {
     dio.BaseOptions options = dio.BaseOptions(
       baseUrl: ApiEndPoints.baseLink,
       connectTimeout: _timeout,
@@ -81,9 +81,9 @@ class HttpCall {
       };
 
       localData.box.write(key, json.encode(responseData));
-      devPrint("HttpCall: Saved data for $url");
+      devPrint("RestClient: Saved data for $url");
     } catch (e) {
-      devPrint("HttpCall: Failed to save data for $url. Error: $e");
+      devPrint("RestClient: Failed to save data for $url. Error: $e");
     }
   }
 
@@ -124,7 +124,7 @@ class HttpCall {
     );
 
     final String sendLink = isImageUrl ? url : url;
-    devPrint("HttpCall: Requesting: GET ----- $sendLink");
+    devPrint("RestClient: Requesting: GET ----- $sendLink");
 
     try {
       final response = await _dio.get(
@@ -134,12 +134,12 @@ class HttpCall {
 
       await _saveResponseToStorage(sendLink, null, response);
 
-      devPrint("HttpCall: Response: GET ----- $sendLink ----- Status Code: ${response.statusCode} ----- Data: ${response.data}");
+      devPrint("RestClient: Response: GET ----- $sendLink ----- Status Code: ${response.statusCode} ----- Data: ${response.data}");
 
       showOfflineToast = true;
       return response;
     } catch (e) {
-      devPrint("HttpCall: GET Error: $e");
+      devPrint("RestClient: GET Error: $e");
       rethrow;
     }
   }
@@ -152,7 +152,7 @@ class HttpCall {
 
     final String sendLink = url;
     if (kDebugMode) {
-      devPrint("HttpCall: Requesting: POST ----- $sendLink ----- $body");
+      devPrint("RestClient: Requesting: POST ----- $sendLink ----- $body");
       showToast(message: sendLink);
     }
 
@@ -166,13 +166,13 @@ class HttpCall {
       await _saveResponseToStorage(sendLink, body, response);
 
       if (kDebugMode) {
-        devPrint("HttpCall: Response: POST ----- $sendLink ----- Status Code: ${response.statusCode} ----- Data: ${response.data}");
+        devPrint("RestClient: Response: POST ----- $sendLink ----- Status Code: ${response.statusCode} ----- Data: ${response.data}");
       }
 
       showOfflineToast = true;
       return response;
     } catch (e) {
-      devPrint("HttpCall: POST Error: $e");
+      devPrint("RestClient: POST Error: $e");
       rethrow;
     }
   }

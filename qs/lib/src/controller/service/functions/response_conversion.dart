@@ -4,8 +4,8 @@ extension HttpResponseJson on http.Response {
 
   Map<String, dynamic> get customToJson {
     return {
-      'statusCode': this.statusCode,
-      'body': this.body,
+      'statusCode': statusCode,
+      'body': body,
      
     };
   }

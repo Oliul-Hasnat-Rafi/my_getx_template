@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:photos/src/controller/service/local_data/cache_service.dart';
 import '../../model/response_model/UserModel.dart';
@@ -32,10 +33,18 @@ class DataController extends GetxController {
     //await localData.initApp();
     await CacheService.init();
     _errorHandler = ErrorHandler();
+    await _initTheme();
   }
 
-  get isLogin async {
-    return localData.localData.userData.value.accessToken != null && localData.localData.userData.value.accessToken!.isNotEmpty;
+  _initTheme() async {
+    final theme = await CacheService.instance.retrieveTheme();
+    if (theme == "light") {
+      Get.changeThemeMode(ThemeMode.light);
+    } else if (theme == "dark") {
+      Get.changeThemeMode(ThemeMode.dark);
+    } else {
+      Get.changeThemeMode(ThemeMode.system);
+    }
   }
 
   Future<bool?> login({
@@ -49,7 +58,7 @@ class DataController extends GetxController {
       });
       if (s.isSuccess && t?.accessToken != null) {
         await CacheService.instance.storeBearerToken(t!.accessToken!);
-        await CacheService.instance.setUserData(t!); 
+        await CacheService.instance.setUserData(t!);
 
         return true;
       }

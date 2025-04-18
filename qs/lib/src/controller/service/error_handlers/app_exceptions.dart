@@ -28,7 +28,7 @@ class RequestTimeOutException extends AppExceptions {
 
 //! RequestTimeOut
 class FormatException extends AppExceptions {
-  FormatException({String? message}) : super(prefix: "Error", message: "${message ?? "Something went wrong. Please contact to the support team or try again later."}");
+  FormatException({String? message}) : super(prefix: "Error", message: message ?? "Something went wrong. Please contact to the support team or try again later.");
 }
 
 //! InvalidUser

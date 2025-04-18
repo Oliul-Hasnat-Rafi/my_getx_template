@@ -20,7 +20,7 @@ class AuthScreenController extends GetxController {
       final String? token = await CacheService.instance.retrieveBearerToken();
       if (token != null && token.isNotEmpty) {
         Get.off(
-          () => const HomeScreen(),
+          () =>  HomeScreen(),
           transition: Transition.rightToLeft,
           duration: const Duration(milliseconds: 500),
         );
@@ -47,7 +47,7 @@ class AuthScreenController extends GetxController {
         if (loginResult == true) {
           //    showSnackBarMessage(AppContext.context, "Login ", SnackBarMessageType.success);
           Get.off(
-            () => const HomeScreen(),
+            () =>  HomeScreen(),
             transition: Transition.rightToLeft,
             duration: const Duration(milliseconds: 500),
           );
