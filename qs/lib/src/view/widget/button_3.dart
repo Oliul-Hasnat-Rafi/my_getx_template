@@ -40,7 +40,7 @@ class Button3 extends StatelessWidget {
             contentPadding: EdgeInsets.zero,
             iconColor: Theme.of(context).colorScheme.onBackground,
             backgroundColor: Colors.transparent,
-            constraints: BoxConstraints(),
+            constraints: const BoxConstraints(),
             borderRadius: BorderRadius.circular(Theme.of(context).buttonTheme.height * 2),
             onTap: () async {
               if (onTap != null) await onTap!();
