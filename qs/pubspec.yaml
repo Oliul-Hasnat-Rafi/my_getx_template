@@ -33,19 +33,22 @@ dependencies:
   path_provider: ^2.1.5
   share_plus: ^10.1.4
   dio: ^5.8.0+1
+  flutter_localizations:
+    sdk: flutter
 
+  
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-  flutter_lints: ^4.0.0
-
+  dart_code_metrics: any
+  flutter_lints: ^2.0.0
 
 flutter:
-
-
+  generate: true
   uses-material-design: true
+
+
 
   # To add assets to your application, add an assets section, like this:
   assets:

@@ -1,19 +1,20 @@
-import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:photos/src/controller/service/local_data/cache_service.dart';
 import 'package:photos/src/view/screen/auth_screen.dart';
 import 'package:photos/src/view/widget/button_3.dart';
-
 import '../../../components.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../controller/screen_controller/home_screen_controller.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
-
+ late AppLocalizations? _appLocalizations;
   Widget _verticalSpace(double factor) => SizedBox(height: defaultPadding / factor);
   HomeScreenController homeScreenController = Get.put(HomeScreenController());
   @override
   Widget build(BuildContext context) {
+    _appLocalizations = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home Screen'),
