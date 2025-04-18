@@ -1,18 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
-import '../user_message/snackbar.dart';
+import 'package:photos/src/core/utils/app_context.dart';
+import 'package:photos/src/core/utils/utils.dart';
 
 abstract class AppExceptions {
   final String prefix;
   final String message;
 
   AppExceptions({this.prefix = "", this.message = ""}) {
-    showSnackBar(
-      title: prefix,
-      message: message,
-      icon: Icon(Icons.error, color: Get.theme.colorScheme.error),
-    );
+    showSnackBarMessage(AppContext.context, message, SnackBarMessageType.failure);
   }
 }
 

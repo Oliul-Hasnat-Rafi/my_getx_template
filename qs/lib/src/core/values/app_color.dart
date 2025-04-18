@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:photos/src/core/values/text_styles.dart';
 
 abstract class AppColors {
   static const Color colorPrimary = Color(0xFF00658F);

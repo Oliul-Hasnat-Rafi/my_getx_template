@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:photos/src/controller/service/api/api_end_points.dart';
 import '../functions/dev_print.dart';
 import '../local_data/app_store_imp.dart';
-import '../user_message/snackbar.dart';
 
 class RestClient {
   late dio.Dio _dio;
@@ -97,7 +96,7 @@ class RestClient {
     Map<String, dynamic> mapTemp = json.decode(cachedData);
 
     if (showOfflineToast) {
-      showToast(message: "Offline mode");
+      
       showOfflineToast = false;
     }
 
@@ -153,7 +152,7 @@ class RestClient {
     final String sendLink = url;
     if (kDebugMode) {
       devPrint("RestClient: Requesting: POST ----- $sendLink ----- $body");
-      showToast(message: sendLink);
+     
     }
 
     try {

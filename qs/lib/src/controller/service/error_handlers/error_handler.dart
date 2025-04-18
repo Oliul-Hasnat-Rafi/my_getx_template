@@ -62,7 +62,7 @@ class ErrorHandler {
       if (showError && showErrorSnack) FormatException();
       showErrorSnack = false;
       return const Tuple2(ErrorType.requestTimeOut, null); //! ------------------------------------- FormatException
-    } catch (e, stackTrace) {
+    } catch (e) {
      devPrint( "ErrorHandler: ${e.toString()}");
       if (e is! http.Response) {
         if (kDebugMode) print("ErrorHandler: ${e.toString()}");

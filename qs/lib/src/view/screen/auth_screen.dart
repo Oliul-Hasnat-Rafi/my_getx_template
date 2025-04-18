@@ -13,7 +13,7 @@ import '../widget/custom_text_field1.dart';
 import '../widget/title_text.dart.dart';
 
 class AuthScreen extends StatelessWidget {
-  AuthScreen({Key? key}) : super(key: key);
+  AuthScreen({super.key});
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
