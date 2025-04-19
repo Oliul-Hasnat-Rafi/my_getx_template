@@ -20,4 +20,8 @@ abstract class AppStorageI {
 
   Future<void> setUserData(UserModel userModel);
   Future<UserModel?> getUserData();
+
+  Future<void> changeLanguage(String languageType);
+
+  Future<String?> retrieveLanguage();
 }

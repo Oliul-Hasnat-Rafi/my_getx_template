@@ -9,6 +9,7 @@ class AppStorageImp implements AppStorageI {
   final String _userDataKey = "userData";
   final String _userDataToken = "userToken";
   final String _themeMode = "themeMode";
+  final String _languageType = "languageType";
   LocalDataModel localData = LocalDataModel();
 
   Future<void> initApp() async {
@@ -102,5 +103,25 @@ class AppStorageImp implements AppStorageI {
   Future<void> clearCredentials() {
     // TODO: implement clearCredentials
     throw UnimplementedError();
+  }
+  
+  @override
+  Future<void> changeLanguage(String languageType) {
+    localData = localData.copyWith(
+      appData: localData.appData.value.copyWith(
+        appLanguage: languageType,
+      ),
+    );
+    return box.write(_languageType, languageType);
+  }
+  
+  @override
+  Future<String?> retrieveLanguage()async {
+    try {
+      final storedLanguage = box.read<String>(_languageType);
+      return storedLanguage;
+    } catch (e) {
+      return null;
+    }
   }
 }

@@ -30,22 +30,12 @@ class DataController extends GetxController {
   }
 
   Future<void> startupTasks() async {
-    //await localData.initApp();
     await CacheService.init();
     _errorHandler = ErrorHandler();
-    await _initTheme();
+  
   }
 
-  _initTheme() async {
-    final theme = await CacheService.instance.retrieveTheme();
-    if (theme == "light") {
-      Get.changeThemeMode(ThemeMode.light);
-    } else if (theme == "dark") {
-      Get.changeThemeMode(ThemeMode.dark);
-    } else {
-      Get.changeThemeMode(ThemeMode.system);
-    }
-  }
+
 
   Future<bool?> login({
     required String email,

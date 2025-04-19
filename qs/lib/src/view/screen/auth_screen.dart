@@ -3,7 +3,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 import 'package:on_process_button_widget/on_process_button_widget.dart';
 import 'package:photos/src/controller/service/functions/dev_print.dart';
 import '../../../components.dart';
@@ -16,7 +15,6 @@ import '../widget/title_text.dart.dart';
 
 class AuthScreen extends StatelessWidget {
   AuthScreen({super.key});
-  AppLocalizations? appLocalizations;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
@@ -69,6 +67,11 @@ class AuthScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appLocalizations = AppLocalizations.of(context);
+    if (appLocalizations == null) {
+      devPrint("Warning: appLocalizations is null!");
+      return const Center(child: CircularProgressIndicator());
+    }
+
     return Scaffold(
       floatingActionButton: kDebugMode ? _buildLoginShortcuts() : null,
       body: SafeArea(
@@ -83,7 +86,7 @@ class AuthScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Obx(() => Text(
-                          controller.isLogin.value ? 'Sign In' : 'Create Account',
+                          controller.isLogin.value ? appLocalizations.logIn : appLocalizations.signUp,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontSize: 24,
@@ -96,7 +99,7 @@ class AuthScreen extends StatelessWidget {
                               ? const SizedBox.shrink()
                               : _buildTextField(
                                   controller: _nameController,
-                                  hintText: 'Name',
+                                  hintText: appLocalizations.usernameLabel,
                                   validator: InputValidators.name,
                                   prefixIcon: const Icon(Icons.person),
                                 ),
@@ -104,33 +107,23 @@ class AuthScreen extends StatelessWidget {
                     Obx(() => controller.isLogin.value ? const SizedBox.shrink() : _verticalSpace(2)),
                     _buildTextField(
                       controller: _emailController,
-                      hintText: 'Email',
+                      hintText: appLocalizations.fieldLabelTextEmail,
                       validator: InputValidators.email,
                       prefixIcon: const Icon(Icons.email),
                     ),
                     _verticalSpace(2),
                     _buildTextField(
                       controller: _passwordController,
-                      hintText: 'Password',
+                      hintText: appLocalizations.fieldLabelTextPassword,
                       validator: InputValidators.password,
                       obscureText: true,
                       prefixIcon: const Icon(Icons.lock),
                     ),
                     _verticalSpace(2),
-                    Obx(() => controller.isLogin.value
-                        ? const SizedBox.shrink()
-                        : Row(
-                            children: [
-                              const SubtitleText(string: 'I want to:'),
-                              SizedBox(width: defaultPadding / 2),
-                            ],
-                          )),
-                    _verticalSpace(2),
                     Obx(() => OnProcessButtonWidget(
                           onTap: controller.isLoading.value
                               ? null
                               : () {
-                                  devPrint("test${appLocalizations?.alreadyHaveAccount}");
                                   // if (formKey.currentState != null && formKey.currentState!.validate()) {
                                   return controller.handleSubmit(
                                     name: _nameController.text.trim(),
@@ -141,7 +134,7 @@ class AuthScreen extends StatelessWidget {
                                   //return null;
                                 },
                           child: Text(
-                            controller.isLogin.value ? 'Login' : 'Sign Up',
+                            controller.isLogin.value ? appLocalizations.logIn : appLocalizations.signUp,
                             style: const TextStyle(fontSize: 16),
                           ),
                         )),
@@ -149,10 +142,10 @@ class AuthScreen extends StatelessWidget {
                     Center(
                       child: Obx(() => RichText(
                             text: TextSpan(
-                              text: controller.isLogin.value ? appLocalizations?.dontHaveAccount : 'Already have an account? ',
+                              text: controller.isLogin.value ? appLocalizations.dontHaveAccount : appLocalizations.alreadyHaveAccount,
                               children: [
                                 TextSpan(
-                                  text: controller.isLogin.value ? 'Sign Up' : 'Login',
+                                  text: controller.isLogin.value ? appLocalizations.signUp : appLocalizations.logIn,
                                   style: const TextStyle(color: Colors.blue),
                                   recognizer: TapGestureRecognizer()..onTap = controller.toggleLoginSignup,
                                 ),
