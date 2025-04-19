@@ -1,12 +1,19 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:photos/src/controller/data_controller/data_controller.dart';
 import 'package:photos/src/controller/service/local_data/cache_service.dart';
-import '../../view/home/home_screen.dart';
+import '../../core/routes/routes.dart';
+import '../../core/utils/app_context.dart';
 
 class AuthScreenController extends GetxController {
   final DataController dataController = Get.find<DataController>();
   final RxBool isLogin = true.obs;
   final RxBool isLoading = false.obs;
+
+  AuthScreenController(BuildContext context) {
+    AppContext.instantiate(context: context);
+  }
 
   @override
   void onInit() {
@@ -18,12 +25,8 @@ class AuthScreenController extends GetxController {
     isLoading.value = true;
     try {
       final String? token = await CacheService.instance.retrieveBearerToken();
-      if (token != null && token.isNotEmpty) {
-        Get.off(
-          () =>  HomeScreen(),
-          transition: Transition.rightToLeft,
-          duration: const Duration(milliseconds: 500),
-        );
+      if (token != null) {
+        _navigateToHomeScreen();
       }
     } finally {
       isLoading.value = false;
@@ -34,6 +37,7 @@ class AuthScreenController extends GetxController {
     String? name,
     required String email,
     required String password,
+    required BuildContext context,
   }) async {
     isLoading.value = true;
 
@@ -45,40 +49,15 @@ class AuthScreenController extends GetxController {
         );
 
         if (loginResult == true) {
-          //    showSnackBarMessage(AppContext.context, "Login ", SnackBarMessageType.success);
-          Get.off(
-            () =>  HomeScreen(),
-            transition: Transition.rightToLeft,
-            duration: const Duration(milliseconds: 500),
-          );
+          _navigateToHomeScreen();
           return true;
         } else {
-          // showSnackBarMessage(AppContext.context, "Login Failed ", SnackBarMessageType.failure);
           return false;
         }
       } else {
-        // Registration flow (uncomment when ready)
-        // if (!name.isNullOrEmpty && email.isNotEmpty && password.isNotEmpty) {
-        //   bool? registerResult = await dataController.register(
-        //     name: name!,
-        //     email: email,
-        //     password: password,
-        //   );
-        //
-        //   if (registerResult == true) {
-        //     Get.off(
-        //       () => const HomeScreen(),
-        //       transition: Transition.rightToLeft,
-        //       duration: const Duration(milliseconds: 500),
-        //     );
-        //     return true;
-        //   }
-        // }
-        //showSnackBarMessage(AppContext.context, "Registration is Failed", SnackBarMessageType.failure);
         return false;
       }
     } catch (e) {
-      //showSnackBarMessage(AppContext.context, "Authentication failed: ${e.toString()}", SnackBarMessageType.failure);
       return false;
     } finally {
       isLoading.value = false;
@@ -87,5 +66,9 @@ class AuthScreenController extends GetxController {
 
   void toggleLoginSignup() {
     isLogin.value = !isLogin.value;
+  }
+
+  void _navigateToHomeScreen() {
+    AppContext.context.goNamed(Routes.home);
   }
 }

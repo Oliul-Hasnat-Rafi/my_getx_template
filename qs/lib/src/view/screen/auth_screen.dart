@@ -3,12 +3,17 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:on_process_button_widget/on_process_button_widget.dart';
 import 'package:photos/src/controller/service/functions/dev_print.dart';
+import 'package:photos/src/core/utils/app_context.dart';
 import '../../../components.dart';
 import '../../controller/screen_controller/auth_screen_controller.dart';
+import '../../controller/service/local_data/cache_service.dart';
+import '../../core/routes/routes.dart';
 import '../../core/validators/input_validators.dart';
 import '../../core/values/app_strings.dart';
+import '../../model/response_model/UserModel.dart';
 import '../widget/custom_animated_size_widget.dart';
 import '../widget/custom_text_field1.dart';
 import '../widget/title_text.dart.dart';
@@ -19,7 +24,9 @@ class AuthScreen extends StatelessWidget {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final formKey = GlobalKey<FormState>();
-  final AuthScreenController controller = Get.put(AuthScreenController());
+  final AuthScreenController controller = Get.put(AuthScreenController(
+    AppContext.context,
+  ));
 
   Widget _verticalSpace(double factor) => SizedBox(height: defaultPadding / factor);
 
@@ -71,6 +78,7 @@ class AuthScreen extends StatelessWidget {
       devPrint("Warning: appLocalizations is null!");
       return const Center(child: CircularProgressIndicator());
     }
+
 
     return Scaffold(
       floatingActionButton: kDebugMode ? _buildLoginShortcuts() : null,
@@ -129,10 +137,14 @@ class AuthScreen extends StatelessWidget {
                                     name: _nameController.text.trim(),
                                     email: _emailController.text.trim(),
                                     password: _passwordController.text.trim(),
+                                    context: context,
                                   );
                                   //}
                                   //return null;
                                 },
+                          onDone: (isSuccess) {
+                            context.goNamed(Routes.home);
+                          },
                           child: Text(
                             controller.isLogin.value ? appLocalizations.logIn : appLocalizations.signUp,
                             style: const TextStyle(fontSize: 16),
