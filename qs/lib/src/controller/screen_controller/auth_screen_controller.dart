@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
 import 'package:photos/src/controller/data_controller/data_controller.dart';
 import 'package:photos/src/controller/service/local_data/cache_service.dart';
 import '../../core/routes/routes.dart';
-import '../../core/utils/app_context.dart';
 
 class AuthScreenController extends GetxController {
   final DataController dataController = Get.find<DataController>();

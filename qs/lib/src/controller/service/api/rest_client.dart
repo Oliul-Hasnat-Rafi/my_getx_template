@@ -1,27 +1,28 @@
 import 'dart:convert';
 import 'package:dio/dio.dart' as dio;
 import 'package:flutter/foundation.dart';
-import 'package:get/get.dart';
 import 'package:photos/src/controller/service/api/api_end_points.dart';
-import '../functions/dev_print.dart';
-import '../local_data/app_store_imp.dart';
+import 'package:photos/src/controller/service/functions/dev_print.dart';
+import 'package:photos/src/controller/service/local_data/cache_service.dart';
+
+import '../../../core/values/app_values.dart';
+import '../local_data/app_store.dart';
 
 class RestClient {
   late dio.Dio _dio;
   String _cookie = "";
-
-  final Duration _timeout = const Duration(seconds: 30);
+  final Duration _timeout =  Duration(seconds: AppValues.defaultApiTime);
   final Map<String, String> _defaultHeaders = {
     "Content-Type": "application/json",
     "TimeZone": DateTime.now().toLocal().timeZoneOffset.toString(),
-    "Accept": "/",
+    "Accept": "application/json",
   };
 
   RestClient() {
     dio.BaseOptions options = dio.BaseOptions(
       baseUrl: ApiEndPoints.baseLink,
       connectTimeout: _timeout,
-      receiveTimeout: const Duration(seconds: 3000),
+      receiveTimeout: _timeout,
       headers: _defaultHeaders,
     );
     _dio = dio.Dio(options);
@@ -69,8 +70,8 @@ class RestClient {
   }
 
   Future<void> _saveResponseToStorage(String url, dynamic body, dio.Response response) async {
-    final AppStorageImp localData = Get.put(AppStorageImp());
-    final String key = "${url.hashCode}_${body == null ? "" : body.hashCode}";
+    final AppStorageI localData = CacheService.instance;
+    final String key = _generateStorageKey(url, body);
 
     try {
       final Map<String, dynamic> responseData = {
@@ -79,7 +80,7 @@ class RestClient {
         'headers': response.headers.map.map((k, v) => MapEntry(k, v.join(';'))),
       };
 
-      localData.box.write(key, json.encode(responseData));
+      await localData.write(key, json.encode(responseData));
       devPrint("RestClient: Saved data for $url");
     } catch (e) {
       devPrint("RestClient: Failed to save data for $url. Error: $e");
@@ -87,111 +88,127 @@ class RestClient {
   }
 
   Future<dio.Response<dynamic>?> _getOfflineData(String url, dynamic body) async {
-    final AppStorageImp localData = Get.put(AppStorageImp());
-    final String key = "${url.hashCode}_${body == null ? "" : body.hashCode}";
+    final AppStorageI localData = CacheService.instance;
+    final String key = _generateStorageKey(url, body);
 
-    String? cachedData = localData.box.read(key);
-    if (cachedData == null) return null;
+    try {
+      String? cachedData = await localData.read(key);
+      if (cachedData == null) return null;
 
-    Map<String, dynamic> mapTemp = json.decode(cachedData);
+      Map<String, dynamic> mapTemp = json.decode(cachedData);
 
-    if (showOfflineToast) {
-      
-      showOfflineToast = false;
-    }
+      if (showOfflineToast) {
+        showOfflineToast = false;
+      }
 
-    return dio.Response(
-      requestOptions: dio.RequestOptions(path: url),
-      statusCode: mapTemp['statusCode'],
-      data: mapTemp['data'],
-      headers: dio.Headers.fromMap(
-        Map<String, List<String>>.from(
-          (mapTemp['headers'] as Map).map((k, v) => MapEntry(k, [
-                v.toString()
-              ])),
+      return dio.Response(
+        requestOptions: dio.RequestOptions(path: url),
+        statusCode: mapTemp['statusCode'],
+        data: mapTemp['data'],
+        headers: dio.Headers.fromMap(
+          Map<String, List<String>>.from(
+            (mapTemp['headers'] as Map).map((k, v) => MapEntry(k, [
+                  v.toString()
+                ])),
+          ),
         ),
-      ),
-    );
+      );
+    } catch (e) {
+      devPrint("RestClient: Failed to retrieve offline data for $url. Error: $e");
+      return null;
+    }
   }
 
   bool showOfflineToast = true;
 
-  Future<dio.Response<dynamic>> get(String url, {String token = '', bool isImageUrl = false, Map<String, String>? headerParameter, int? timeout, bool addCookie = false}) async {
+  Future<dio.Response<dynamic>> get(
+    String url, {
+    String token = '',
+    bool isImageUrl = false,
+    Map<String, String>? headerParameter,
+    int? timeout,
+    bool addCookie = false,
+  }) async {
+    return _executeRequest(
+      method: 'GET',
+      url: url,
+      token: token,
+      headerParameter: headerParameter,
+      timeout: timeout,
+      addCookie: addCookie,
+      isImageUrl: isImageUrl,
+    );
+  }
+
+  Future<dio.Response<dynamic>> post(
+    String url, {
+    String token = '',
+    Map<String, String>? headerParameter,
+    Object? body,
+    int? requestTimeout,
+    bool addCookie = false,
+  }) async {
+    return _executeRequest(
+      method: 'POST',
+      url: url,
+      token: token,
+      headerParameter: headerParameter,
+      timeout: requestTimeout,
+      addCookie: addCookie,
+      body: body,
+    );
+  }
+
+  Future<dio.Response<dynamic>> _executeRequest({
+    required String method,
+    required String url,
+    required String token,
+    Map<String, String>? headerParameter,
+    int? timeout,
+    required bool addCookie,
+    Object? body,
+    bool isImageUrl = false,
+  }) async {
     final dio.Options options = dio.Options(
       headers: _buildHeaders(token, headerParameter, addCookie),
       sendTimeout: timeout != null ? Duration(seconds: timeout) : _timeout,
     );
 
     final String sendLink = isImageUrl ? url : url;
-    devPrint("RestClient: Requesting: GET ----- $sendLink");
+    devPrint("RestClient: Requesting: $method ----- $sendLink${body != null ? ' ----- $body' : ''}");
 
     try {
-      final response = await _dio.get(
-        sendLink,
-        options: options,
-      );
-
-      await _saveResponseToStorage(sendLink, null, response);
-
-      devPrint("RestClient: Response: GET ----- $sendLink ----- Status Code: ${response.statusCode} ----- Data: ${response.data}");
-
-      showOfflineToast = true;
-      return response;
-    } catch (e) {
-      devPrint("RestClient: GET Error: $e");
-      rethrow;
-    }
-  }
-
-  Future<dio.Response<dynamic>> post(String url, {String token = '', Map<String, String>? headerParameter, Object? body, int? requestTimeout, bool addCookie = false}) async {
-    final dio.Options options = dio.Options(
-      headers: _buildHeaders(token, headerParameter, addCookie),
-      sendTimeout: requestTimeout != null ? Duration(seconds: requestTimeout) : _timeout,
-    );
-
-    final String sendLink = url;
-    if (kDebugMode) {
-      devPrint("RestClient: Requesting: POST ----- $sendLink ----- $body");
-     
-    }
-
-    try {
-      final response = await _dio.post(
-        sendLink,
-        data: body,
-        options: options,
-      );
+      final response = await (method == 'GET' ? _dio.get(sendLink, options: options) : _dio.post(sendLink, data: body, options: options));
 
       await _saveResponseToStorage(sendLink, body, response);
 
-      if (kDebugMode) {
-        devPrint("RestClient: Response: POST ----- $sendLink ----- Status Code: ${response.statusCode} ----- Data: ${response.data}");
-      }
+      devPrint("RestClient: Response: $method ----- $sendLink ----- Status Code: ${response.statusCode} ----- Data: ${response.data}");
 
       showOfflineToast = true;
       return response;
     } catch (e) {
-      devPrint("RestClient: POST Error: $e");
+      devPrint("RestClient: $method Error: $e");
       rethrow;
     }
   }
 
-  Map<String, dynamic> _buildHeaders(String token, Map<String, String>? headerParameter, bool addCookie) {
-    final Map<String, dynamic> headers = {};
-    headers.addAll(headerParameter ?? _defaultHeaders);
+  Map<String, String> _buildHeaders(String token, Map<String, String>? headerParameter, bool addCookie) {
+    final Map<String, String> headers = {
+      ...(headerParameter ?? _defaultHeaders)
+    };
 
     if (token.isNotEmpty) {
-      headers.addAll({
-        "Authorization": token
-      });
+      headers['Authorization'] = token;
     }
 
     if (addCookie && _cookie.isNotEmpty) {
-      headers.addAll({
-        'Cookie': _cookie
-      });
+      headers['Cookie'] = _cookie;
     }
 
     return headers;
+  }
+
+  String _generateStorageKey(String url, dynamic body) {
+    return "$url${body != null ? '_${jsonEncode(body).hashCode}' : ''}";
   }
 }

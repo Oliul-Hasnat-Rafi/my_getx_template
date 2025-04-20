@@ -1,29 +1,27 @@
 import 'package:get/get.dart';
+import 'package:photos/src/controller/data_controller/data_controller.dart';
+
+import '../../model/response_model/product_response_model.dart';
 
 class HomeScreenController extends GetxController {
-  final RxBool isDarkMode = false.obs;
+  final isLoading = false.obs;
+  final DataController dataController = Get.find<DataController>();
+  final RxList<Product?> product = RxList<Product?>([]);
 
-  // @override
-  // void onInit() {
-  //   super.onInit();
-  //   _initTheme();
-  // }
+  @override
+  void onInit() {
+    super.onInit();
+    fetchData();
+  }
 
-  // Future<void> _initTheme() async {
-  //   final theme = await CacheService.instance.retrieveTheme();
-  //   isDarkMode.value = theme == 'dark';
-  // }
+  void fetchData() async {
+    isLoading.value = true;
+    try {
+      final res = await dataController.getProduct();
 
-  // Future<void> toggleTheme() async {
-  //   await _initTheme();
-  //   isDarkMode.toggle();
-
-  //   if (isDarkMode.value) {
-  //     CacheService.instance.changeTheme(ThemeMode.dark);
-  //     Get.changeThemeMode(ThemeMode.dark);
-  //   } else {
-  //     CacheService.instance.changeTheme(ThemeMode.light);
-  //     Get.changeThemeMode(ThemeMode.light);
-  //   }
-  // }
+      product.value = res;
+    } finally {
+      isLoading.value = false;
+    }
+  }
 }

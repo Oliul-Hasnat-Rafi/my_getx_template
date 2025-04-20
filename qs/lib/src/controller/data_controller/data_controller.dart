@@ -1,16 +1,17 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:photos/src/controller/service/local_data/cache_service.dart';
-import '../../model/response_model/UserModel.dart';
+import 'package:photos/src/model/response_model/product_response_model.dart';
+import '../../model/response_model/user_response_model.dart';
 import '../service/api/api_services.dart';
 import '../service/error_handlers/error_handler.dart';
+import '../service/local_data/app_store.dart';
 import '../service/local_data/app_store_imp.dart';
 
 class DataController extends GetxController {
   bool _isInit = false;
   late final ApiServices _apiServices;
   late final ErrorHandler _errorHandler;
-  late final AppStorageImp localData;
+  late final AppStorageI localData;
 
   DataController() {
     localData = Get.put(AppStorageImp());
@@ -32,29 +33,41 @@ class DataController extends GetxController {
   Future<void> startupTasks() async {
     await CacheService.init();
     _errorHandler = ErrorHandler();
-  
   }
 
-
-
-  Future<bool?> login({
+  Future<bool> login({
     required String email,
     required String password,
   }) async {
     try {
-      UserModel? t;
-      var s = await _errorHandler.errorHandler(function: () async {
-        t = await _apiServices.login(email: email, password: password);
+      UserModel? user;
+      final result = await _errorHandler.errorHandler(function: () async {
+        user = await _apiServices.login(email: email, password: password);
       });
-      if (s.isSuccess && t?.accessToken != null) {
-        await CacheService.instance.storeBearerToken(t!.accessToken!);
-        await CacheService.instance.setUserData(t!);
-
+      if (result.isSuccess && user?.accessToken != null) {
+        await CacheService.instance.storeBearerToken(user!.accessToken!);
+        await CacheService.instance.setUserData(user!);
         return true;
       }
       return false;
     } catch (e) {
       throw Exception("Login failed: $e");
+    }
+  }
+
+  Future<List<Product>> getProduct() async {
+    try {
+      List<Product>? products;
+      await _errorHandler.errorHandler(function: () async {
+        products = await _apiServices.getProduct();
+      });
+      if (products != null) {
+        return products!;
+      } else {
+        throw Exception("Failed to fetch products");
+      }
+    } catch (e) {
+      throw Exception("Error fetching product: $e");
     }
   }
 }

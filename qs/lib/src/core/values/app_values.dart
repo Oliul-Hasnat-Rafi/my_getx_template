@@ -64,7 +64,6 @@ abstract class AppValues {
   static double stackedImageDefaultSpaceFactor = 0.4;
   static double stackedImageDefaultSize = 30.w;
 
-  // Font-related or icon sizes (with .sp)
   static double iconDefaultSize = 24.sp;
   static double emoticonDefaultSize = 22.sp;
   static double iconSize20 = 20.sp;
@@ -100,6 +99,7 @@ abstract class AppValues {
   static int defaultPageNumber = 1;
   static int defaultDebounceTimeInMilliSeconds = 1000;
   static int defaultThrottleTimeInMilliSeconds = 500;
+  static int defaultApiTime = 30;
 
   static double height16 = 16.h;
 

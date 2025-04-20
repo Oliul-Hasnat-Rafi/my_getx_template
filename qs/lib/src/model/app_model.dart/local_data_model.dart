@@ -1,6 +1,6 @@
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:photos/src/model/app_model.dart/app_model.dart';
-import 'package:photos/src/model/response_model/UserModel.dart';
+import 'package:photos/src/model/response_model/user_response_model.dart';
 
 class LocalDataModel {
   final Rx<UserModel> userData;

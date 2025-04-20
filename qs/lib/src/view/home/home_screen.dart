@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:photos/src/controller/service/local_data/cache_service.dart';
 import 'package:photos/src/core/values/app_color.dart';
+import 'package:photos/src/core/values/app_values.dart';
 import 'package:photos/src/view/screen/auth_screen.dart';
 import 'package:photos/src/view/widget/button_3.dart';
 import 'package:photos/src/view/widget/title_text.dart.dart';
 import '../../../components.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../controller/screen_controller/base_controller.dart/base_controller.dart';
+import '../../controller/screen_controller/home_screen_controller.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({
@@ -17,6 +19,7 @@ class HomeScreen extends StatelessWidget {
 
   Widget _verticalSpace(double factor) => SizedBox(height: defaultPadding / factor);
   final BaseController _baseController = Get.put(BaseController());
+  final HomeScreenController _homeScreenController = Get.put(HomeScreenController());
 
   @override
   Widget build(BuildContext context) {
@@ -47,20 +50,35 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       drawer: _buildDrawer(context, appLocalizations),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(appLocalizations.welcome),
-            ElevatedButton(
-              onPressed: () {
-                Get.toNamed('/profile');
-              },
-              child: Text(appLocalizations.profile),
-            ),
-          ],
-        ),
-      ),
+      body: Obx(() => Column(
+            children: [
+              _homeScreenController.isLoading.value ? const LinearProgressIndicator() : const SizedBox(),
+              Center(child: Text(appLocalizations.welcome)),
+              _verticalSpace(2),
+              Flexible(
+                child: ListView.builder(
+                    itemCount: _homeScreenController.product.length,
+                    itemBuilder: (_, index) {
+                      return Padding(
+                        padding: EdgeInsets.all(AppValues.padding),
+                        child: Column(
+                          children: [
+                            ListTile(
+                              leading: CircleAvatar(
+                                backgroundImage: NetworkImage(_homeScreenController.product[index]?.images?[0] ?? ""),
+                              ),
+                              title: Text(_homeScreenController.product[index]?.title ?? ""),
+                              subtitle: Text(_homeScreenController.product[index]?.description ?? ""),
+                              trailing: Text("\$${_homeScreenController.product[index]?.price}"),
+                            ),
+                            const Divider(),
+                          ],
+                        ),
+                      );
+                    }),
+              ),
+            ],
+          )),
     );
   }
 
