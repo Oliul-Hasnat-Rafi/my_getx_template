@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppContext {
-  late BuildContext _context;
+  BuildContext? _context;
   bool _lock = false;
 
   static final AppContext instance = AppContext._internal();
@@ -11,13 +11,17 @@ class AppContext {
   factory AppContext.instantiate({
     required BuildContext context,
   }) {
-    if (instance._lock) return instance;
-
     instance._context = context;
     instance._lock = true;
-
     return instance;
   }
 
-  static BuildContext context = AppContext.instance._context;
+  static BuildContext get context {
+    if (instance._context == null) {
+      throw Exception('AppContext not initialized. Call AppContext.instantiate first.');
+    }
+    return instance._context!;
+  }
+  
+  static bool get isInitialized => instance._context != null;
 }

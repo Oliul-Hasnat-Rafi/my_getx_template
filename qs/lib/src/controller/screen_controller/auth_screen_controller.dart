@@ -11,22 +11,18 @@ class AuthScreenController extends GetxController {
   final RxBool isLogin = true.obs;
   final RxBool isLoading = false.obs;
 
-  AuthScreenController(BuildContext context) {
-    AppContext.instantiate(context: context);
-  }
-
   @override
   void onInit() {
     super.onInit();
-    _initData();
+    initData();
   }
 
-  void _initData() async {
+  Future<void> initData() async {
     isLoading.value = true;
     try {
       final String? token = await CacheService.instance.retrieveBearerToken();
       if (token != null) {
-        _navigateToHomeScreen();
+        _navigatedToHome();
       }
     } finally {
       isLoading.value = false;
@@ -49,7 +45,7 @@ class AuthScreenController extends GetxController {
         );
 
         if (loginResult == true) {
-          _navigateToHomeScreen();
+          _navigatedToHome();
           return true;
         } else {
           return false;
@@ -68,7 +64,7 @@ class AuthScreenController extends GetxController {
     isLogin.value = !isLogin.value;
   }
 
-  void _navigateToHomeScreen() {
-    AppContext.context.goNamed(Routes.home);
+  void _navigatedToHome() {
+    Get.toNamed(Routes.home);
   }
 }

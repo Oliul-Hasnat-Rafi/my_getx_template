@@ -78,9 +78,9 @@ class AppStorageImp implements AppStorageI {
   }
 
   @override
-  Future<String?> retrieveTheme()async {
+  Future<ThemeMode?> retrieveTheme()async {
     try {
-      final storedTheme = box.read<String>(_themeMode);
+      final storedTheme = box.read<ThemeMode>(_themeMode);
       return storedTheme;
     } catch (e) {
       return null;

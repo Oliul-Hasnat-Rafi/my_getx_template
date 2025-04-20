@@ -15,34 +15,31 @@ class BaseController extends GetxController {
   Future<void> _init() async {
     final theme = await CacheService.instance.retrieveTheme();
     final language = await CacheService.instance.retrieveLanguage();
-    _initializedTheme(theme);
+    _initializedTheme(theme ?? ThemeMode.system);
     _initializedLanguage(language);
   }
 
   Future<void> toggleTheme() async {
-    ThemeMode newThemeMode = themeMode.value == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
-
-    themeMode.value = newThemeMode;
-
-    await CacheService.instance.changeTheme(newThemeMode);
-
-    Get.changeThemeMode(newThemeMode);
-
-    update();
+    // ThemeMode newThemeMode = themeMode.value == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+    // themeMode.value = newThemeMode;
+    // await CacheService.instance.changeTheme(newThemeMode);
+    // Get.changeThemeMode(newThemeMode);
+    final theme = await CacheService.instance.retrieveTheme();
+    themeMode.value != theme;
+    _initializedTheme(themeMode.value);
   }
 
   void changeLanguage(Locale newLocale) {
     locale.value = newLocale;
     CacheService.instance.changeLanguage(locale.value.languageCode);
     Get.updateLocale(newLocale);
-    update();
   }
 
-  void _initializedTheme(String? theme) {
-    if (theme == 'dark') {
+  void _initializedTheme(ThemeMode theme) {
+    if (theme.name == 'dark') {
       themeMode.value = ThemeMode.dark;
       Get.changeThemeMode(ThemeMode.dark);
-    } else if (theme == 'light') {
+    } else if (theme.name == 'light') {
       themeMode.value = ThemeMode.light;
       Get.changeThemeMode(ThemeMode.light);
     } else {

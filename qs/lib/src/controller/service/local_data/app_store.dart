@@ -16,7 +16,7 @@ abstract class AppStorageI {
 
   Future<void> changeTheme(ThemeMode themeMode);
 
-  Future<String?> retrieveTheme();
+  Future<ThemeMode?> retrieveTheme();
 
   Future<void> setUserData(UserModel userModel);
   Future<UserModel?> getUserData();

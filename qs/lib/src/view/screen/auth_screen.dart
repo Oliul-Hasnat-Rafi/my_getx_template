@@ -20,13 +20,16 @@ import '../widget/title_text.dart.dart';
 
 class AuthScreen extends StatelessWidget {
   AuthScreen({super.key});
+
   final TextEditingController _emailController = TextEditingController();
+
   final TextEditingController _passwordController = TextEditingController();
+
   final TextEditingController _nameController = TextEditingController();
+
   final formKey = GlobalKey<FormState>();
-  final AuthScreenController controller = Get.put(AuthScreenController(
-    AppContext.context,
-  ));
+
+  final AuthScreenController controller = Get.put(AuthScreenController());
 
   Widget _verticalSpace(double factor) => SizedBox(height: defaultPadding / factor);
 
@@ -78,7 +81,6 @@ class AuthScreen extends StatelessWidget {
       devPrint("Warning: appLocalizations is null!");
       return const Center(child: CircularProgressIndicator());
     }
-
 
     return Scaffold(
       floatingActionButton: kDebugMode ? _buildLoginShortcuts() : null,
@@ -143,7 +145,7 @@ class AuthScreen extends StatelessWidget {
                                   //return null;
                                 },
                           onDone: (isSuccess) {
-                            context.goNamed(Routes.home);
+                            Get.toNamed(Routes.home);
                           },
                           child: Text(
                             controller.isLogin.value ? appLocalizations.logIn : appLocalizations.signUp,
@@ -154,6 +156,7 @@ class AuthScreen extends StatelessWidget {
                     Center(
                       child: Obx(() => RichText(
                             text: TextSpan(
+                              style: Theme.of(context).textTheme.bodyMedium,
                               text: controller.isLogin.value ? appLocalizations.dontHaveAccount : appLocalizations.alreadyHaveAccount,
                               children: [
                                 TextSpan(
