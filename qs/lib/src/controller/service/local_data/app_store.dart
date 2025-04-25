@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:photos/src/model/response_model/user_response_model.dart';
 
 abstract class AppStorageI {
+  Future<void> initApp();
   Future<void> write(String key, dynamic value);
   Future<dynamic> read(String key);
   Future<void> storeBearerToken(String token);

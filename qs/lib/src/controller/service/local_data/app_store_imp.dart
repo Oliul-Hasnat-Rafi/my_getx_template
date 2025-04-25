@@ -14,6 +14,7 @@ class AppStorageImp implements AppStorageI {
 
   AppStorageImp();
 
+  @override
   Future<void> initApp() async {
     await GetStorage.init();
     _box = GetStorage();
@@ -118,19 +119,16 @@ class AppStorageImp implements AppStorageI {
 
   @override
   Future<void> storeCredentials(Map<String, dynamic> credentials) {
-    // TODO: implement storeCredentials
     throw UnimplementedError();
   }
 
   @override
   Future<Map<String, dynamic>?> retrieveCredentials() {
-    // TODO: implement retrieveCredentials
     throw UnimplementedError();
   }
 
   @override
   Future<void> clearCredentials() {
-    // TODO: implement clearCredentials
     throw UnimplementedError();
   }
 

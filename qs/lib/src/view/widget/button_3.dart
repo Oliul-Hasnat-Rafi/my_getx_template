@@ -38,7 +38,7 @@ class Button3 extends StatelessWidget {
           aspectRatio: 1,
           child: OnProcessButtonWidget(
             contentPadding: EdgeInsets.zero,
-            iconColor: Theme.of(context).colorScheme.onBackground,
+            iconColor: Theme.of(context).colorScheme.onSurface,
             backgroundColor: Colors.transparent,
             constraints: const BoxConstraints(),
             borderRadius: BorderRadius.circular(Theme.of(context).buttonTheme.height * 2),

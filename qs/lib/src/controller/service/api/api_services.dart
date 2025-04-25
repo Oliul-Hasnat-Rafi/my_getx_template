@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:get/get.dart';
+import 'package:get_it/get_it.dart';
 import 'package:photos/src/controller/service/api/api_end_points.dart';
 import 'package:photos/src/controller/service/api/rest_client.dart';
 import 'package:photos/src/controller/service/functions/dev_print.dart';
@@ -7,8 +8,9 @@ import 'package:photos/src/model/response_model/product_response_model.dart';
 import 'package:photos/src/model/response_model/user_response_model.dart';
 
 class ApiServices extends GetxController {
- late final RestClient _httpCall;
-  ApiServices() : _httpCall = RestClient();
+  final RestClient _httpCall;
+
+  ApiServices({RestClient? httpCall}) : _httpCall = httpCall ?? GetIt.instance<RestClient>();
 
   Future<UserModel?> login({
     required String email,
@@ -25,9 +27,9 @@ class ApiServices extends GetxController {
 
       return UserModel.fromJson(response.data);
     } catch (e) {
-      devPrint(e.toString());
+      devPrint("ApiServices: Login error: $e");
+      rethrow;
     }
-    return null;
   }
 
   Future<List<Product>?> getProduct() async {
@@ -39,15 +41,13 @@ class ApiServices extends GetxController {
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data['products'];
         return data.map((e) => Product.fromJson(e)).toList();
-      } else if (response.statusCode == 401) {
-        devPrint('Error: ${response.statusCode}');
-      } else if (response.statusCode == 500) {
       } else {
-        devPrint('Error: ${response.statusCode}');
+        devPrint('ApiServices: Error: ${response.statusCode}');
+        return null;
       }
     } catch (e) {
-      devPrint(e.toString());
+      devPrint("ApiServices: Get product error: $e");
+      rethrow;
     }
-    return null;
   }
 }

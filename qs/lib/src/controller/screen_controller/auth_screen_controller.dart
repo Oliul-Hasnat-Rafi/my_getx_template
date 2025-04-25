@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_it/get_it.dart';
 import 'package:photos/src/controller/data_controller/data_controller.dart';
-import 'package:photos/src/controller/service/local_data/cache_service.dart';
 import '../../core/routes/routes.dart';
+import '../service/local_data/app_store.dart' show AppStorageI;
 
 class AuthScreenController extends GetxController {
-  final DataController dataController = Get.find<DataController>();
+  final DataController _dataController ;
+  final AppStorageI _appStorage;
   final RxBool isLogin = true.obs;
   final RxBool isLoading = false.obs;
+
+  AuthScreenController({
+    DataController? dataController,
+    AppStorageI? appStorage,
+  })  : _appStorage = appStorage ?? GetIt.instance<AppStorageI>(),
+        _dataController = dataController ?? GetIt.instance<DataController>();
 
   @override
   void onInit() {
@@ -18,7 +26,7 @@ class AuthScreenController extends GetxController {
   Future<void> initData() async {
     isLoading.value = true;
     try {
-      final String? token = await CacheService.instance.retrieveBearerToken();
+      final String? token = await _appStorage.retrieveBearerToken();
       if (token != null) {
         _navigatedToHome();
       }
@@ -37,7 +45,7 @@ class AuthScreenController extends GetxController {
 
     try {
       if (isLogin.value) {
-        bool? loginResult = await dataController.login(
+        bool? loginResult = await _dataController.login(
           email: email,
           password: password,
         );

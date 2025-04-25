@@ -43,7 +43,7 @@ class CustomCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = Theme.of(context).colorScheme.onBackground;
+    final c = Theme.of(context).colorScheme.onSurface;
     return OnProcessButtonWidget(
       borderRadius: borderRadius,
       fontColor: c,

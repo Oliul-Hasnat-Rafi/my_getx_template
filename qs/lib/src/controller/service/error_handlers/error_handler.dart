@@ -1,83 +1,80 @@
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
-import 'package:get/get.dart';
 import 'package:photos/src/controller/service/error_handlers/app_exceptions.dart';
 import 'package:photos/src/controller/service/functions/dev_print.dart';
 import 'package:tuple/tuple.dart';
-import '../../data_controller/data_controller.dart';
 import '../api/api_services.dart';
 
 class ErrorHandler {
-  late final DataController controller;
-  late final ApiServices apiServices;
+  //final ApiServices _apiServices;
   bool showErrorSnack = true;
-  ErrorHandler() {
-    controller = Get.find();
-    apiServices = Get.find();
-  }
 
-  Future<ResponseModel> errorHandler({bool showError = true, required Future Function() function, bool isAuthService = false}) async {
-   
+  // ErrorHandler({ApiServices? apiServices})
+  //     : _apiServices = apiServices ?? GetIt.instance<ApiServices>();
 
-    
+  Future<ResponseModel> errorHandler({
+    bool showError = true,
+    required Future Function() function,
+    bool isAuthService = false,
+  }) async {
     Tuple2<ErrorType, int?> res = await _errorHandler(
       showError: showError,
       function: () async => await function(),
       isAuthService: isAuthService,
     );
 
-    //! -------------------------------------------------------------------------------------------- Refreshing token
     if (res.item1 == ErrorType.invalidUser) {
       if (showError) InvalidUser();
-    
     }
 
     return ResponseModel(isSuccess: res.item1 == ErrorType.done, statusCode: res.item2 ?? -1);
-
-    // await function();
-    // return ResponseModel(isSuccess: true, statusCode: 200);
   }
 
-
-  Future<Tuple2<ErrorType, int?>> _errorHandler({bool showError = true, required Function function, required bool isAuthService}) async {
+  Future<Tuple2<ErrorType, int?>> _errorHandler({
+    bool showError = true,
+    required Function function,
+    required bool isAuthService,
+  }) async {
     try {
       await function();
       showErrorSnack = true;
-      return const Tuple2(ErrorType.done, null); // !  --------------------------------------------- Done
+      return const Tuple2(ErrorType.done, null);
     } on SocketException {
       if (kDebugMode) print("ErrorHandler: SocketException");
       if (showError && showErrorSnack) InternetException();
       showErrorSnack = false;
-      return const Tuple2(ErrorType.internetException, null); //! ---------------------------------- InternetException
+      return const Tuple2(ErrorType.internetException, null);
     } on TimeoutException {
       if (kDebugMode) print("ErrorHandler: TimeoutException");
       if (showError && showErrorSnack) RequestTimeOutException();
       showErrorSnack = false;
-      return const Tuple2(ErrorType.requestTimeOut, null); //! ------------------------------------- TimeoutException
+      return const Tuple2(ErrorType.requestTimeOut, null);
     } on FormatException {
       if (kDebugMode) print("ErrorHandler: FormatException");
       if (showError && showErrorSnack) FormatException();
       showErrorSnack = false;
-      return const Tuple2(ErrorType.requestTimeOut, null); //! ------------------------------------- FormatException
+      return const Tuple2(ErrorType.requestTimeOut, null);
     } catch (e) {
-     devPrint( "ErrorHandler: ${e.toString()}");
+      devPrint("ErrorHandler: ${e.toString()}");
       if (e is! http.Response) {
         if (kDebugMode) print("ErrorHandler: ${e.toString()}");
         if (showError && showErrorSnack) CustomException();
         showErrorSnack = false;
-        return const Tuple2(ErrorType.customException, null); //! ------------------------------------------- CustomException
+        return const Tuple2(ErrorType.customException, null);
       }
       if (e.statusCode == 401) {
         if (kDebugMode) print("ErrorHandler: InvalidUser");
-        return Tuple2(ErrorType.invalidUser, e.statusCode); //! -------------------------------------- InvalidUser
+        return Tuple2(ErrorType.invalidUser, e.statusCode);
       }
 
-      if (e.statusCode == 321 && isAuthService) return Tuple2(ErrorType.done, e.statusCode); //! ------------------------------------------- OTP Request
-      if (e.statusCode == 322 && isAuthService) return Tuple2(ErrorType.done, e.statusCode); //! ------------------------------------------- OTP Request
-      if (e.statusCode == 323 && isAuthService) return Tuple2(ErrorType.done, e.statusCode); //! ------------------------------------------- OTP Request
+      if (e.statusCode == 321 && isAuthService) return Tuple2(ErrorType.done, e.statusCode);
+      if (e.statusCode == 322 && isAuthService) return Tuple2(ErrorType.done, e.statusCode);
+      if (e.statusCode == 323 && isAuthService) return Tuple2(ErrorType.done, e.statusCode);
 
       if (kDebugMode) print("ErrorHandler: CustomException");
 
@@ -86,10 +83,14 @@ class ErrorHandler {
         message = jsonDecode(e.body)['error'] ?? "";
       } catch (_) {}
 
-      // if (message.isNotEmpty) message = "Error Message: $message";
-      if (showError && showErrorSnack) CustomException(message: message.isEmpty ? "Unexpected error. Please contact the support team." : message, response: "Error code: ${e.statusCode}");
+      if (showError && showErrorSnack) {
+        CustomException(
+          message: message.isEmpty ? "Unexpected error. Please contact the support team." : message,
+          response: "Error code: ${e.statusCode}",
+        );
+      }
       showErrorSnack = false;
-      return Tuple2(ErrorType.customException, e.statusCode); //! ---------------------------------------- CustomException
+      return Tuple2(ErrorType.customException, e.statusCode);
     }
   }
 }
@@ -99,7 +100,7 @@ enum ErrorType {
   internetException,
   requestTimeOut,
   invalidUser,
-  customException
+  customException,
 }
 
 class ResponseModel {

@@ -1,24 +1,24 @@
 import 'dart:convert';
 import 'package:dio/dio.dart' as dio;
 import 'package:flutter/foundation.dart';
+import 'package:get_it/get_it.dart';
 import 'package:photos/src/controller/service/api/api_end_points.dart';
 import 'package:photos/src/controller/service/functions/dev_print.dart';
-import 'package:photos/src/controller/service/local_data/cache_service.dart';
-
-import '../../../core/values/app_values.dart';
-import '../local_data/app_store.dart';
+import 'package:photos/src/controller/service/local_data/app_store.dart';
 
 class RestClient {
   late dio.Dio _dio;
   String _cookie = "";
-  final Duration _timeout =  Duration(seconds: AppValues.defaultApiTime);
+  final Duration _timeout = const Duration(seconds: 30);
   final Map<String, String> _defaultHeaders = {
     "Content-Type": "application/json",
     "TimeZone": DateTime.now().toLocal().timeZoneOffset.toString(),
     "Accept": "application/json",
   };
+  final AppStorageI _localData;
 
-  RestClient() {
+  RestClient({AppStorageI? localData})
+      : _localData = localData ?? GetIt.instance<AppStorageI>() {
     dio.BaseOptions options = dio.BaseOptions(
       baseUrl: ApiEndPoints.baseLink,
       connectTimeout: _timeout,
@@ -43,7 +43,8 @@ class RestClient {
           return handler.next(response);
         },
         onError: (dioError, handler) async {
-          if (dioError.type == dio.DioExceptionType.connectionError || dioError.type == dio.DioExceptionType.connectionTimeout) {
+          if (dioError.type == dio.DioExceptionType.connectionError ||
+              dioError.type == dio.DioExceptionType.connectionTimeout) {
             try {
               final res = await _getOfflineData(
                 dioError.requestOptions.path,
@@ -70,7 +71,6 @@ class RestClient {
   }
 
   Future<void> _saveResponseToStorage(String url, dynamic body, dio.Response response) async {
-    final AppStorageI localData = CacheService.instance;
     final String key = _generateStorageKey(url, body);
 
     try {
@@ -80,7 +80,7 @@ class RestClient {
         'headers': response.headers.map.map((k, v) => MapEntry(k, v.join(';'))),
       };
 
-      await localData.write(key, json.encode(responseData));
+      await _localData.write(key, json.encode(responseData));
       devPrint("RestClient: Saved data for $url");
     } catch (e) {
       devPrint("RestClient: Failed to save data for $url. Error: $e");
@@ -88,11 +88,10 @@ class RestClient {
   }
 
   Future<dio.Response<dynamic>?> _getOfflineData(String url, dynamic body) async {
-    final AppStorageI localData = CacheService.instance;
     final String key = _generateStorageKey(url, body);
 
     try {
-      String? cachedData = await localData.read(key);
+      String? cachedData = await _localData.read(key);
       if (cachedData == null) return null;
 
       Map<String, dynamic> mapTemp = json.decode(cachedData);
@@ -107,9 +106,7 @@ class RestClient {
         data: mapTemp['data'],
         headers: dio.Headers.fromMap(
           Map<String, List<String>>.from(
-            (mapTemp['headers'] as Map).map((k, v) => MapEntry(k, [
-                  v.toString()
-                ])),
+            (mapTemp['headers'] as Map).map((k, v) => MapEntry(k, [v.toString()])),
           ),
         ),
       );
@@ -149,7 +146,9 @@ class RestClient {
     bool addCookie = false,
   }) async {
     return _executeRequest(
-      method: 'POST',
+     
+
+ method: 'POST',
       url: url,
       token: token,
       headerParameter: headerParameter,
@@ -178,11 +177,14 @@ class RestClient {
     devPrint("RestClient: Requesting: $method ----- $sendLink${body != null ? ' ----- $body' : ''}");
 
     try {
-      final response = await (method == 'GET' ? _dio.get(sendLink, options: options) : _dio.post(sendLink, data: body, options: options));
+      final response = await (method == 'GET'
+          ? _dio.get(sendLink, options: options)
+          : _dio.post(sendLink, data: body, options: options));
 
       await _saveResponseToStorage(sendLink, body, response);
 
-      devPrint("RestClient: Response: $method ----- $sendLink ----- Status Code: ${response.statusCode} ----- Data: ${response.data}");
+      devPrint(
+          "RestClient: Response: $method ----- $sendLink ----- Status Code: ${response.statusCode} ----- Data: ${response.data}");
 
       showOfflineToast = true;
       return response;
@@ -193,9 +195,7 @@ class RestClient {
   }
 
   Map<String, String> _buildHeaders(String token, Map<String, String>? headerParameter, bool addCookie) {
-    final Map<String, String> headers = {
-      ...(headerParameter ?? _defaultHeaders)
-    };
+    final Map<String, String> headers = {...(headerParameter ?? _defaultHeaders)};
 
     if (token.isNotEmpty) {
       headers['Authorization'] = token;

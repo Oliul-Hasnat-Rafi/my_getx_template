@@ -1,16 +1,36 @@
-MyGetX Template
+# MyGetX Template
 
 A Flutter project template designed for building scalable and maintainable cross-platform applications using the GetX state management library. This template provides a clean architecture to streamline development for Android, iOS, web, and desktop platforms.
 
+*Last Updated: April 25, 2025*
+
 ## Table of Contents
 
-- Project Structure
-- Prerequisites
-- Setup Instructions
-- Running the App
-- Testing
-- Contributing
-- License
+- [Features](#features)
+- [Project Structure](#project-structure)
+- [Technology Stack](#technology-stack)
+- [Prerequisites](#prerequisites)
+- [Setup Instructions](#setup-instructions)
+- [Running the App](#running-the-app)
+- [Internationalization](#internationalization)
+- [Testing](#testing)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Features
+
+- **Clean Architecture**: Modular design with clear separation of concerns
+- **State Management**: Efficient state management with GetX
+- **Responsive Design**: Adaptive layouts using flutter_screenutil
+- **Multi-platform Support**: Android, iOS, Web, macOS, Linux, and Windows
+- **Internationalization**: Built-in localization support
+- **Routing**: Simple navigation with Go Router
+- **Dependency Injection**: Using GetIt for service locator pattern
+- **Theme Customization**: Light and dark theme support
+- **Local Storage**: Persistent storage with get_storage
+- **HTTP Client**: API integration with Dio and HTTP packages
+- **Form Validation**: Comprehensive input validation
+- **Asset Management**: Organized asset handling for images and SVGs
 
 ## Project Structure
 
@@ -35,15 +55,20 @@ my_getx_template/
 │   │   │   ├── values/             # Constant values and configurations
 │   │   ├── model/                  # Data models
 │   │   │   ├── app_model.dart      # Core app models
-│   │   │   ├── pogo_model/        # Plain Old Dart Objects (POGO) models
+│   │   │   ├── pogo_model/         # Plain Old Dart Objects (POGO) models
 │   │   │   ├── response_model/     # Models for API responses
 │   │   ├── view/                   # UI screens and widgets
 │   │   │   ├── home/               # Home screen UI
 │   │   │   ├── screen/             # Other screen UIs
 │   │   │   ├── widget/             # Reusable widgets
 │   ├── components.dart             # Shared UI components
+│   ├── l10n/                       # Internationalization files
 │   ├── main.dart                   # Application entry point
-
+├── assets/                         # Static resources
+│   ├── icons/                      # SVG and other icon files
+│   ├── images/                     # Image assets
+│   ├── flags/                      # Language flag images
+```
 
 ### Key Directories
 
@@ -52,29 +77,59 @@ my_getx_template/
 - `lib/src/core/`: Houses reusable utilities, themes, validators, and constants for consistent app behavior.
 - `lib/src/model/`: Defines data models, including app-specific models, POGOs, and API response models.
 - `lib/src/view/`: Contains UI code for screens and reusable widgets, following a modular design.
-- `assets/`: Stores static assets like images, fonts, and other resources.
-- `test/`: Includes unit and widget tests to ensure code reliability.
+- `lib/l10n/`: Contains localization files for internationalization support.
+- `assets/`: Stores static assets like images, icons, and flag images for language selection.
+
+## Technology Stack
+
+This template uses the following packages and technologies:
+
+- **UI & Responsive Design**:
+  - flutter_screenutil: ^5.9.0
+  - google_fonts: ^6.1.0
+  - flutter_svg: ^2.0.9
+  - on_process_button_widget: ^2.0.2
+  - on_popup_window_widget: ^0.0.8
+
+- **State Management & Routing**:
+  - get: ^4.6.6 (GetX framework)
+  - go_router: ^15.0.0
+  - get_it: ^8.0.3 (Dependency injection)
+
+- **Data & Storage**:
+  - get_storage: ^2.1.1
+  - path_provider: ^2.1.5
+  - intl: ^0.19.0
+
+- **Networking**:
+  - http: ^1.1.2
+  - dio: ^5.8.0+1
+
+- **Platform Features**:
+  - permission_handler: ^11.0.1
+  - share_plus: ^10.1.4
+  - fluttertoast: ^8.2.4
 
 ## Prerequisites
 
 To work with this project, ensure you have the following installed:
 
-- Flutter (version 3.x or higher)
-- Dart (bundled with Flutter)
+- Flutter SDK (version 3.5.4 or higher)
+- Dart SDK (bundled with Flutter)
 - A code editor like VS Code or Android Studio
 - Git for version control
 - Platform-specific SDKs:
   - **Android**: Android SDK (via Android Studio)
   - **iOS**: Xcode (for macOS)
   - **Web**: Chrome or another supported browser
-  - **Desktop**: Dependencies for Linux, macOS, or Windows
+  - **Desktop**: Dependencies for Linux, macOS, or Windows development
 
 ## Setup Instructions
 
 1. **Clone the repository**:
 
    ```bash
-   git clone https://github.com/Oliul-Hasnat-Rafi/my_getx_template.git
+   git clone https://github.com/yourusername/my_getx_template.git
    cd my_getx_template
    ```
 
@@ -84,14 +139,14 @@ To work with this project, ensure you have the following installed:
    flutter pub get
    ```
 
-3. **Configure assets**: Ensure assets (e.g., images, fonts) are declared in `pubspec.yaml` under the `flutter.assets` section.
+3. **Configure assets**: The assets are already properly configured in the pubspec.yaml file.
 
 4. **Set up platform-specific requirements**:
 
    - **Android**: Connect an Android emulator or device.
    - **iOS**: Configure Xcode with a valid developer account.
    - **Web**: No additional setup required.
-   - **Desktop**: Follow Flutter's desktop setup guide for your platform (Flutter Desktop).
+   - **Desktop**: Follow Flutter's desktop setup guide for your platform.
 
 ## Running the App
 
@@ -121,6 +176,15 @@ To build a release version:
 flutter build <platform> 
 ```
 
+## Internationalization
+
+This template includes support for multiple languages. The internationalization is handled using Flutter's built-in localization framework. Language files are located in the `lib/l10n/` directory.
+
+To add a new language:
+1. Create a new ARB file in the `lib/l10n/` directory (e.g., `app_fr.arb` for French)
+2. Run `flutter gen-l10n` to generate localization code
+3. Language selection UI is already implemented in the app
+
 ## Testing
 
 Run tests using:
@@ -139,7 +203,7 @@ Contributions are welcome! To contribute:
 2. Create a new branch (`git checkout -b feature/your-feature`).
 3. Make changes and commit (`git commit -m "Add your feature"`).
 4. Push to the branch (`git push origin feature/your-feature`).
-5. Open a pull request on GitHub.
+5. Open a pull request.
 
 Please ensure your code follows the project's coding standards and includes appropriate tests.
 
