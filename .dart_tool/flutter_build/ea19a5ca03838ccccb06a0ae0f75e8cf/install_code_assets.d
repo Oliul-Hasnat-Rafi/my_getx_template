@@ -1,0 +1,1 @@
+ /Users/gtr/Rafi/personal_project/my_getx_template/.dart_tool/flutter_build/ea19a5ca03838ccccb06a0ae0f75e8cf/native_assets.json: 

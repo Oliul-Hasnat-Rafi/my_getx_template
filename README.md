@@ -8,6 +8,7 @@ A Flutter project template designed for building scalable and maintainable cross
 
 - [Features](#features)
 - [Project Structure](#project-structure)
+- [Screenshots](#screenshots)
 - [Technology Stack](#technology-stack)
 - [Prerequisites](#prerequisites)
 - [Setup Instructions](#setup-instructions)
@@ -79,6 +80,15 @@ my_getx_template/
 - `lib/src/view/`: Contains UI code for screens and reusable widgets, following a modular design.
 - `lib/l10n/`: Contains localization files for internationalization support.
 - `assets/`: Stores static assets like images, icons, and flag images for language selection.
+
+## Screenshots
+
+Here are some screenshots of the application:
+
+<div align="center">
+  <img src="assets/images/screenshot.png" alt="Application Screenshot" width="300"/>
+  <img src="assets/images/screenshot2.png" alt="Application Screenshot 2" width="300"/>
+</div>
 
 ## Technology Stack
 
