@@ -6,6 +6,8 @@ A modern Flutter application built with the GetX state management framework. Thi
 
 - [Features](#features)
 - [Project Structure](#project-structure)
+- [Screenshots](#screenshots)
+- [Technology Stack](#technology-stack)
 - [Prerequisites](#prerequisites)
 - [Setup Instructions](#setup-instructions)
 - [Running the App](#running-the-app)
@@ -61,6 +63,55 @@ lib/
 ├── components.dart        # Shared components
 ├── main.dart              # Application entry point
 ```
+
+### Key Directories
+
+- `lib/src/controller/`: Contains GetX controllers for managing state and business logic, organized into data and screen-specific controllers.
+- `lib/src/service/`: Manages API calls, error handling, and local data storage, ensuring separation of concerns.
+- `lib/src/core/`: Houses reusable utilities, themes, validators, and constants for consistent app behavior.
+- `lib/src/model/`: Defines data models, including app-specific models, POGOs, and API response models.
+- `lib/src/view/`: Contains UI code for screens and reusable widgets, following a modular design.
+- `lib/l10n/`: Contains localization files for internationalization support.
+- `assets/`: Stores static assets like images, icons, and flag images for language selection.
+
+## Screenshots
+
+Here are some screenshots of the application:
+
+<div align="center">
+  <img src="assets/images/screenshot.png" alt="Application Screenshot" width="300"/>
+  <img src="assets/images/screenshot2.png" alt="Application Screenshot 2" width="300"/>
+</div>
+
+## Technology Stack
+
+This template uses the following packages and technologies:
+
+- **UI & Responsive Design**:
+  - flutter_screenutil: ^5.9.0
+  - google_fonts: ^6.1.0
+  - flutter_svg: ^2.0.9
+  - on_process_button_widget: ^2.0.2
+  - on_popup_window_widget: ^0.0.8
+
+- **State Management & Routing**:
+  - get: ^4.6.6 (GetX framework)
+  - go_router: ^15.0.0
+  - get_it: ^8.0.3 (Dependency injection)
+
+- **Data & Storage**:
+  - get_storage: ^2.1.1
+  - path_provider: ^2.1.5
+  - intl: ^0.19.0
+
+- **Networking**:
+  - http: ^1.1.2
+  - dio: ^5.8.0+1
+
+- **Platform Features**:
+  - permission_handler: ^11.0.1
+  - share_plus: ^10.1.4
+  - fluttertoast: ^8.2.4
 
 ## Prerequisites
 
