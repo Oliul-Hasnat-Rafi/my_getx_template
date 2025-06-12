@@ -13,18 +13,36 @@ import '../../controller/screen_controller/home_screen_controller.dart';
 import '../../controller/service/local_data/app_store.dart' show AppStorageI;
 import '../../core/routes/routes.dart';
 
-class HomeScreen extends StatelessWidget {
-  final AppStorageI _appStorage;
+class HomeScreen extends StatefulWidget {
+  final AppStorageI? appStorage;
 
-  HomeScreen({
+  const HomeScreen({
     super.key,
-    AppStorageI? appStorage,
-  }) : _appStorage = appStorage ?? Get.find<AppStorageI>();
+    this.appStorage, 
+  });
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late final AppStorageI _appStorage;
+  late final BaseController _baseController;
+  late final HomeScreenController _homeScreenController;
+
+  @override
+  void initState() {
+    super.initState();
+
+ 
+    _appStorage = widget.appStorage ?? getIt<AppStorageI>();
+    _baseController = getIt<BaseController>();
+    _homeScreenController = getIt<HomeScreenController>();
+    _homeScreenController.fetchData();
+
+  }
 
   Widget _verticalSpace(double factor) => SizedBox(height: defaultPadding / factor);
-  final BaseController _baseController = getIt<BaseController>();
-  final HomeScreenController _homeScreenController = Get.put(HomeScreenController());
-
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +61,7 @@ class HomeScreen extends StatelessWidget {
             },
             child: const Icon(Icons.logout_rounded),
           ),
-          _verticalSpace(1),
+          _verticalSpace(1), 
           Button3(
             onTap: () async {
               _baseController.changeTheme(
@@ -57,7 +75,7 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       drawer: _buildDrawer(context, appLocalizations),
-      body: Obx(() => Column(
+      body: Obx(() => Column( 
             children: [
               _homeScreenController.isLoading.value ? const LinearProgressIndicator() : const SizedBox(),
               Center(child: Text(appLocalizations.welcome)),
@@ -95,7 +113,7 @@ class HomeScreen extends StatelessWidget {
       content: Text("${appLocalizations.logOut}?"),
       onConfirm: () {
         _appStorage.clearToken();
-        Get.toNamed(Routes.auth);
+        Get.offAllNamed(Routes.auth); 
       },
       onCancel: () {
         Get.back();
@@ -104,6 +122,7 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildDrawer(BuildContext context, AppLocalizations appLocalizations) {
+
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -210,10 +229,10 @@ class HomeScreen extends StatelessWidget {
     return const Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       CircleAvatar(
         radius: 40,
-        backgroundImage: AssetImage("qs/assets/images/person.png"),
+        backgroundImage: AssetImage("assets/images/person.png"), 
       ),
       SizedBox(height: 10),
-      TitleText("Oliul Hasnat Rafi ")
+      TitleText("Oliul Hasnat Rafi ") 
     ]);
   }
 }

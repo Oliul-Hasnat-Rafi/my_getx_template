@@ -15,12 +15,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await ServiceLocator.setup();
+  await ServiceLocator.setup(); 
   AppContext.instantiate;
-  Get.put(getIt<AppStorageI>());
-  Get.put(getIt<BaseController>());
-  Get.put(getIt<AuthScreenController>());
-
   runApp(const MyApp());
 }
 
