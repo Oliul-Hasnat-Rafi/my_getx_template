@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:photos/src/controller/data_controller/data_controller.dart';
+import 'package:photos/src/core/utils/app_context.dart';
 import '../../core/routes/routes.dart';
 import '../service/local_data/app_store.dart' show AppStorageI;
 
@@ -73,6 +74,7 @@ class AuthScreenController extends GetxController {
   }
 
   void _navigatedToHome() {
-    Get.toNamed(Routes.home);
+    //Get.toNamed(Routes.home);
+    Navigator.pushNamed(AppContext.context, Routes.home);
   }
 }

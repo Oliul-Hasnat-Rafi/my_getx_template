@@ -11,13 +11,9 @@ class BaseController extends GetxController {
   BaseController({AppStorageI? appStorage})
       : _appStorage = appStorage ?? GetIt.instance<AppStorageI>();
 
-  @override
-  void onInit() {
-    super.onInit();
-    _init();
-  }
 
-  Future<void> _init() async {
+
+  Future<void> init() async {
     final storedTheme = await _appStorage.retrieveTheme();
     if (storedTheme != null) {
       themeMode.value = ThemeMode.values.firstWhere(
