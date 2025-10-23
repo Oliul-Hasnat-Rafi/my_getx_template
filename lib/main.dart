@@ -1,56 +1,90 @@
+import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:photos/src/controller/screen_controller/auth_screen_controller.dart';
-import 'package:photos/src/controller/screen_controller/base_controller.dart/base_controller.dart';
-import 'package:photos/src/controller/service/local_data/app_store.dart';
-import 'package:photos/src/controller/service/service_locator.dart';
-import 'package:photos/src/core/localization.dart';
-import 'package:photos/src/core/routes/route_generator.dart';
-import 'package:photos/src/core/theme/color.schema.dart';
-import 'package:photos/src/core/utils/app_context.dart';
-import 'package:photos/src/core/utils/transitions.dart';
-import 'package:photos/src/core/values/app_values.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-void main() async {
+import 'components.dart';
+import 'src/controllers/data_controllers/app_data_controller.dart';
+import 'src/controllers/data_controllers/auth_controller.dart';
+import 'src/core/environment/environment.dart';
+import 'src/core/localization/app_translations.dart';
+import 'src/core/theme/app_theme.dart';
+import 'src/views/screens/splash_screen/splash_screen.dart';
+
+void main(List<String> args) async {
+  //? This line is important for initializing the app
   WidgetsFlutterBinding.ensureInitialized();
-  await ServiceLocator.setup(); 
-  AppContext.instantiate;
-  runApp(const MyApp());
+
+  //! ------------------------------------------------ App supported orientation
+  await SystemChrome.setPreferredOrientations(
+    <DeviceOrientation>[DeviceOrientation.portraitUp],
+  );
+
+  //! -------------------------------------------- Loading pre-initializing data
+  await Environment.init; // Initialize environment
+  Locale locale = await AppTranslations.init; // Initialize translations
+  ThemeMode themeMode = await AppTheme.init; // Initialize theme
+
+  Widget app = _MyApp(locale: locale, themeMode: themeMode);
+  runApp(DevicePreview(enabled: !kReleaseMode, builder: (_) => app));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class _MyApp extends StatelessWidget {
+  const _MyApp({
+    required this.locale,
+    required this.themeMode,
+  });
+
+  final Locale locale;
+  final ThemeMode themeMode;
 
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
+      fontSizeResolver: (num fontSize, _) => fontSize.toDouble(),
       ensureScreenSize: true,
-      designSize: AppValues.baseScreenSize,
+      designSize: defaultBaseScreenSize,
       minTextAdapt: true,
       useInheritedMediaQuery: true,
       splitScreenMode: true,
-      builder: (context, child) => GetMaterialApp(
-        supportedLocales: getSupportedLocal(),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        locale: getIt<BaseController>().locale.value,
-        themeMode: getIt<BaseController>().themeMode.value,
+      builder: (BuildContext context, Widget? child) => GetMaterialApp(
+        theme: AppTheme.theme(context),
+        darkTheme: AppTheme.theme(context, brightness: Brightness.dark),
+        themeMode: themeMode,
+        locale: locale,
+        fallbackLocale: AppTranslations.supportedLocales.first,
+        translations: AppTranslations(),
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: lightColorScheme,
-          pageTransitionsTheme: pageTransitionsTheme,
+        initialBinding: _InitializedBinding(),
+        scrollBehavior: const MaterialScrollBehavior().copyWith(
+          dragDevices: <PointerDeviceKind>{
+            PointerDeviceKind.mouse,
+            PointerDeviceKind.touch,
+          },
         ),
-        darkTheme: ThemeData(
-          useMaterial3: true,
-          colorScheme: darkColorScheme,
-          pageTransitionsTheme: pageTransitionsTheme,
-        ),
-        initialRoute: RouteGenerator.initialRoute,
-        unknownRoute: RouteGenerator.getPages.last,
-        getPages: RouteGenerator.getPages,
+        home: child!,
+        builder: (BuildContext context, Widget? child) {
+          // return child!;
+          return AnnotatedRegion<SystemUiOverlayStyle>(
+            value: AppTheme.setSafeAreaColor(context),
+            child: child!,
+          );
+        },
       ),
+      child: const SplashScreen(),
     );
+  }
+}
+
+class _InitializedBinding extends Bindings {
+  _InitializedBinding();
+
+  @override
+  void dependencies() {
+    Get.put(AppDataController());
+    Get.put(AuthController());
   }
 }

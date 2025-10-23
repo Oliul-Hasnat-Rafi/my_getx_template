@@ -1,42 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-const projectName = "qs";
-const projectVersion = "1.0.0";
+//! ---------------------------------------------------------------- App Details
+/// App name
+const String appName = 'GetX MVC Template';
 
+/// App description
+const String appDescription =
+    '''Use the GetX MVC Template to start a new project with GetX. To read more about this template, go to the Readme.md file.''';
+/// App Terms and Conditions
+const String urlTOS = 'https://www.google.com';
 
-//! ------------------------------------------------------------------------------------------------ Sizes
-get baseScreenSize => const Size(360, 690);
-get defaultPadding => 24.sp;
-get defaultBoxHeight => defaultPadding * 2;
-get defaultBorderRadius => 8.0;
-const paginationPageSize = 50;
-const maxBoxWidth = 400.0;
+/// App Privacy Policy
+const String urlPP = 'https://www.google.com';
+
+//! ------------------------------------------------------------------ Dimension
+/// Designed screen size
+const Size defaultBaseScreenSize = Size(360, 690);
+
+/// Default spacing
+double get defaultPadding => 24.sp;
+
+/// Button Height.
+/// Also can be accessed using `Theme.of(context).buttonTheme.height`
+double get defaultButtonHeight => defaultPadding * 2;
+
+/// The maximum with the widget takes.
+const double defaultMaxBoxWidth = 400;
 
 //* Border
-get borderWidth1 => 2.sp;
-get borderWidth2 => 1.sp;
+/// Border width 1.sp
+double get defaultBorderWidth1 => 1.sp;
 
-//! ------------------------------------------------------------------------------------------------ Time
-const defaultDuration = Duration(milliseconds: 500);
-const apiCallTimeOut = Duration(seconds: 60);
+/// Border width 2.sp
+double get defaultBorderWidth2 => 2.sp;
 
-//! ------------------------------------------------------------------------------------------------ Text
-get textTheme => GoogleFonts.montserratTextTheme(Typography.englishLike2018.apply(fontSizeFactor: 1.sp));
+//! ------------------------------------------------------- Animation & Duration
+/// Animation curve
+const Curve defaultCurve = Curves.easeInOut;
 
-get buttonTheme => ButtonThemeData(height: defaultBoxHeight);
-get appBarTheme => AppBarTheme(
-      toolbarHeight: defaultBoxHeight,
-      surfaceTintColor: Colors.transparent,
-      centerTitle: false,
-    );
-get textButtonTheme => TextButtonThemeData(
-      style: TextButton.styleFrom(
-        padding: EdgeInsets.symmetric(horizontal: defaultPadding),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(defaultBorderRadius),
-        ),
-      ),
-    );
+/// Splash screen waiting time
+const Duration defaultSplashScreenShowDuration = Duration(seconds: 3);
 
+/// Animation duration
+const Duration defaultDuration = Duration(milliseconds: 500);
+
+/// OTP resend waiting time
+const Duration defaultOtpWaiting = Duration(seconds: 120);
