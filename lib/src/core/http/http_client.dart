@@ -168,6 +168,127 @@ class _HttpClient {
     return response;
   }
 
+  /// put request
+  Future<dio.Response<Map<String, dynamic>>> put(
+    String url, {
+    String? token,
+    Map<String, String>? headerParameter,
+    Map<String, String>? additionalHeaderParameter,
+    bool addCookie = false,
+    Object? body,
+    String? customBaseLink,
+  }) async {
+    if (kDebugMode) showToast(title: null, message: url);
+
+    final dio.Options options = dio.Options(headers: <String, String>{});
+
+    if (headerParameter != null) {
+      options.headers?.addAll(headerParameter);
+    }
+
+    if (additionalHeaderParameter != null) {
+      options.headers?.addAll(additionalHeaderParameter);
+    }
+
+    if ((token) != null || _getToken.isNotEmpty) {
+      options.headers?[HttpHeaders.authorizationHeader] = token ?? _getToken;
+    }
+
+    if (addCookie && _cookie.isNotEmpty) {
+      options.headers?['Cookie'] = _cookie;
+    }
+
+    String? processedBody;
+    if (body != null) {
+      processedBody = jsonEncode(body);
+    }
+
+    String sendLink = (customBaseLink ?? _baseLink) + url;
+
+    _printReport(
+      isGet: false,
+      isResponse: false,
+      sendLink: sendLink,
+      processedBody: processedBody,
+    );
+
+    final dio.Response<Map<String, dynamic>> response = await _dio.put(
+      sendLink,
+      data: processedBody,
+      options: options,
+    );
+
+    _printReport(
+      isGet: false,
+      isResponse: true,
+      sendLink: sendLink,
+      processedBody: processedBody,
+      response: response,
+    );
+
+    return response;
+  }
+  /// patch request
+  Future<dio.Response<Map<String, dynamic>>> patch(
+    String url, {
+    String? token,
+    Map<String, String>? headerParameter,
+    Map<String, String>? additionalHeaderParameter,
+    bool addCookie = false,
+    Object? body,
+    String? customBaseLink,
+  }) async {
+    if (kDebugMode) showToast(title: null, message: url);
+
+    final dio.Options options = dio.Options(headers: <String, String>{});
+
+    if (headerParameter != null) {
+      options.headers?.addAll(headerParameter);
+    }
+
+    if (additionalHeaderParameter != null) {
+      options.headers?.addAll(additionalHeaderParameter);
+    }
+
+    if ((token) != null || _getToken.isNotEmpty) {
+      options.headers?[HttpHeaders.authorizationHeader] = token ?? _getToken;
+    }
+
+    if (addCookie && _cookie.isNotEmpty) {
+      options.headers?['Cookie'] = _cookie;
+    }
+
+    String? processedBody;
+    if (body != null) {
+      processedBody = jsonEncode(body);
+    }
+
+    String sendLink = (customBaseLink ?? _baseLink) + url;
+
+    _printReport(
+      isGet: false,
+      isResponse: false,
+      sendLink: sendLink,
+      processedBody: processedBody,
+    );
+
+    final dio.Response<Map<String, dynamic>> response = await _dio.patch(
+      sendLink,
+      data: processedBody,
+      options: options,
+    );
+
+    _printReport(
+      isGet: false,
+      isResponse: true,
+      sendLink: sendLink,
+      processedBody: processedBody,
+      response: response,
+    );
+
+    return response;
+  }
+
   String _getHeader(dio.Response<Map<String, dynamic>>? response) {
     if (response == null) return '';
 
